@@ -1,8 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+
+function Play() {
+  return (
+    <button>
+      Play
+    </button>
+  );
+}
+
+function Stop() {
+  return (
+    <button>
+      Stop
+    </button>
+  );
+}
+
+function App() {
+  return (
+    <div>
+      <Play/>
+      <Stop/>
+    </div>
+  );
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
