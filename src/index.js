@@ -6,18 +6,25 @@ import reportWebVitals from './reportWebVitals';
 class Play extends React.Component {
   constructor(props) {
     super(props);
+
     this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick(e) {
     e.preventDefault();
-    this.props.onPlay()
+    if (this.props.isPaused) {
+      this.props.onPlay();
+    } else {
+      this.props.onPause();
+    }
   }
 
   render() {
+    const btnText = this.props.isPaused ? "Play" : "Pause";
+
     return (
       <button onClick={this.handleClick}>
-        Play
+        {btnText}
       </button>
     );
   }
@@ -46,6 +53,10 @@ class Stop extends React.Component {
 class AudioPlayer extends React.Component {
   constructor(props) {
     super(props);
+    
+    this.state = {
+      isPaused: true,
+    }
 
     this.audioCtx = null;
     this.srcBuf = null;
@@ -54,6 +65,7 @@ class AudioPlayer extends React.Component {
 
     this.handlePlay = this.handlePlay.bind(this);
     this.handleStop = this.handleStop.bind(this);
+    this.handlePause = this.handlePause.bind(this);
   }
 
   componentDidMount() {
@@ -79,7 +91,13 @@ class AudioPlayer extends React.Component {
 
   handlePlay() {
     if (this.audioCtx.state === "suspended") {
-      this.audioCtx.resume().then(() => this.handlePlay());
+      this.audioCtx.resume().then(() => {
+        this.setState((state, props) => ({
+          isPaused: false,
+        }));
+
+        this.handlePlay()
+      });
       return;
     }
     
@@ -98,6 +116,9 @@ class AudioPlayer extends React.Component {
     if (this.srcNode) {
       this.srcNode.start(0);
       this.isPlaying = true;
+      this.setState((state, props) => ({
+        isPaused: false,
+      }));
     }
   }
 
@@ -109,15 +130,40 @@ class AudioPlayer extends React.Component {
     if (this.srcNode) {
       this.srcNode.stop(0);
       this.isPlaying = false;
+      this.setState((state, props) => ({
+        isPaused: true,
+      }));
       this.srcNode = null;
+    }
+  }
+
+  handlePause() {
+    if (!this.audioCtx) {
+      return;
+    }
+
+    if (this.audioCtx.state === "running") {
+      this.audioCtx.suspend().then(() => {
+        this.setState((state, props) => ({
+          isPaused: true,
+        }));
+      });
+      return;
+    } else if (this.audioCtx.state === "suspended") {
+      this.audioCtx.resume().then(() => {
+        this.setState((state, props) => ({
+          isPaused: false,
+        }));
+      });
+      return;
     }
   }
 
   render() {
     return (
       <div>
-        <Play onPlay={this.handlePlay}/>
         <Stop onStop={this.handleStop}/>
+        <Play onPlay={this.handlePlay} onPause={this.handlePause} isPaused={this.state.isPaused}/>
       </div>
     );
   }
