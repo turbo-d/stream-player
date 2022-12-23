@@ -90,7 +90,6 @@ class AudioPlayer extends React.Component {
     // Set up the AudioBufferSourceNode
     this.srcNode = new AudioBufferSourceNode(this.audioCtx, {
       buffer: this.srcBuf,
-      loop: true,
     });
 
     // Connect the nodes together
