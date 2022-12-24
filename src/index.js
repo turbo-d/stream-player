@@ -64,6 +64,36 @@ class PlaybackTime extends React.Component {
   }
 }
 
+class PlaybackProgressBar extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  render() {
+    const containerStyles = {
+      height: 20,
+      width: '25%',
+      backgroundColor: "#e0e0de",
+      borderRadius: 50,
+      margin: 50
+    }
+  
+    const fillerStyles = {
+      height: '100%',
+      width: `${this.props.completed}%`,
+      backgroundColor: "#6a1b9a",
+      borderRadius: 'inherit',
+      textAlign: 'right'
+    }
+
+    return (
+      <div style={containerStyles}>
+        <div style={fillerStyles}/>
+      </div>
+    );
+  }
+}
+
 class AudioPlayer extends React.Component {
   constructor(props) {
     super(props);
@@ -194,6 +224,7 @@ class AudioPlayer extends React.Component {
   render() {
     let timeElapsed = "-:--";
     let timeRemaining = "-:--";
+    let completed = 0;
 
     if (this.srcBuf) {
       timeElapsed = this.state.timeElapsed.toISOString().substring(15, 19);
@@ -203,6 +234,8 @@ class AudioPlayer extends React.Component {
       const secElapsed = this.state.timeElapsed.getSeconds() + (60 * minElapsed);
 
       timeRemaining = new Date(1000 * (trackLength - secElapsed)).toISOString().substring(15, 19);
+
+      completed = 100 * (secElapsed / trackLength);
     }
 
     timeRemaining = "-" + timeRemaining;
@@ -213,6 +246,7 @@ class AudioPlayer extends React.Component {
         <Play onPlay={this.handlePlay} onPause={this.handlePause} isPaused={this.state.isPaused}/>
         <PlaybackTime playbackTime={timeElapsed}/>
         <PlaybackTime playbackTime={timeRemaining}/>
+        <PlaybackProgressBar completed={completed}/>
       </div>
     );
   }
