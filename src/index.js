@@ -168,6 +168,20 @@ class AudioPlayer extends React.Component {
     // Connect the nodes together
     this.srcNode.connect(this.audioCtx.destination);
 
+    this.srcNode.addEventListener(
+      "ended",
+      () => {
+        this.isPlaying = false;
+        this.setState((state, props) => ({
+          isPaused: true,
+          timeElapsed: new Date(0),
+        }));
+        clearInterval(this.timerID);
+        this.srcNode = null;
+      },
+      false
+    )
+
     if (this.srcNode) {
       this.srcNode.start(0);
       this.isPlaying = true;
@@ -189,13 +203,13 @@ class AudioPlayer extends React.Component {
 
     if (this.srcNode) {
       this.srcNode.stop(0);
-      this.isPlaying = false;
-      this.setState((state, props) => ({
-        isPaused: true,
-        timeElapsed: new Date(0),
-      }));
-      clearInterval(this.timerID);
-      this.srcNode = null;
+      //this.isPlaying = false;
+      //this.setState((state, props) => ({
+      //  isPaused: true,
+      //  timeElapsed: new Date(0),
+      //}));
+      //clearInterval(this.timerID);
+      //this.srcNode = null;
     }
   }
 
