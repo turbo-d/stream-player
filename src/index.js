@@ -251,6 +251,10 @@ class AudioPlayer extends React.Component {
 
 
     if (!this.isPlaying) {
+      this.setState((state, props) => ({
+        cursor: 0,
+      }));
+
       return;
     }
 
