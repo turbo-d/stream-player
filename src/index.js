@@ -259,7 +259,7 @@ class AudioPlayer extends React.Component {
   render() {
     let timeElapsed = "-:--";
     let timeRemaining = "-:--";
-    let completed = 0;
+    //let completed = 0;
     let maxSlider = 100;
     let timeElapsedSecs = 0;
     let disableThumb = true;
@@ -274,7 +274,7 @@ class AudioPlayer extends React.Component {
 
       timeRemaining = new Date(1000 * (trackLength - secElapsed)).toISOString().substring(15, 19);
 
-      completed = 100 * (secElapsed / trackLength);
+      //completed = 100 * (secElapsed / trackLength);
 
       maxSlider = Math.floor(trackLength);
 
@@ -289,7 +289,6 @@ class AudioPlayer extends React.Component {
         <Play onPlay={this.handlePlay} onPause={this.handlePause} isPaused={this.state.isPaused}/>
         <PlaybackTime playbackTime={timeElapsed}/>
         <PlaybackTime playbackTime={timeRemaining}/>
-        <PlaybackProgressBar completed={completed}/>
         <PlaybackSlider min={0} max={maxSlider} value={timeElapsedSecs} disabled={disableThumb} onChange={this.handlePlaybackSliderChange}/>
       </div>
     );
