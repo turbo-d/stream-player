@@ -66,36 +66,6 @@ class PlaybackTime extends React.Component {
   }
 }
 
-class PlaybackProgressBar extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
-  render() {
-    const containerStyles = {
-      height: 20,
-      width: '25%',
-      backgroundColor: "#e0e0de",
-      borderRadius: 50,
-      margin: 50
-    }
-  
-    const fillerStyles = {
-      height: '100%',
-      width: `${this.props.completed}%`,
-      backgroundColor: "#6a1b9a",
-      borderRadius: 'inherit',
-      textAlign: 'right'
-    }
-
-    return (
-      <div style={containerStyles}>
-        <div style={fillerStyles}/>
-      </div>
-    );
-  }
-}
-
 function PlaybackSlider(props) {
   return (
     <ReactSlider
@@ -128,8 +98,8 @@ class AudioPlayer extends React.Component {
     this.lastTime = 0;
 
     this.handlePlay = this.handlePlay.bind(this);
-    this.handleRTZ = this.handleRTZ.bind(this);
     this.handlePause = this.handlePause.bind(this);
+    this.handleRTZ = this.handleRTZ.bind(this);
     this.handlePlaybackSliderChange = this.handlePlaybackSliderChange.bind(this);
   }
 
@@ -244,6 +214,21 @@ class AudioPlayer extends React.Component {
     }
   }
 
+  handlePause() {
+    // call this.stop function and leave cursor as is
+
+
+    if (!this.isPlaying) {
+      return;
+    }
+
+    clearInterval(this.timerID);
+
+    if (this.srcNode) {
+      this.srcNode.stop(0);
+    }
+  }
+
   handleRTZ() {
     // call this.stop function
     // reset cursor to sample frame zero
@@ -262,21 +247,6 @@ class AudioPlayer extends React.Component {
     this.setState((state, props) => ({
       cursor: 0,
     }));
-
-    if (this.srcNode) {
-      this.srcNode.stop(0);
-    }
-  }
-
-  handlePause() {
-    // call this.stop function and leave cursor as is
-
-
-    if (!this.isPlaying) {
-      return;
-    }
-
-    clearInterval(this.timerID);
 
     if (this.srcNode) {
       this.srcNode.stop(0);
