@@ -31,7 +31,8 @@ class Play extends React.Component {
   }
 };
 
-class Stop extends React.Component {
+// RTZ - Return to Zero
+class RTZ extends React.Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
@@ -39,13 +40,13 @@ class Stop extends React.Component {
 
   handleClick(e) {
     e.preventDefault();
-    this.props.onStop()
+    this.props.onRTZ()
   }
 
   render() {
     return (
       <button onClick={this.handleClick}>
-        Stop
+        RTZ
       </button>
     );
   }
@@ -127,7 +128,7 @@ class AudioPlayer extends React.Component {
     this.lastTime = 0;
 
     this.handlePlay = this.handlePlay.bind(this);
-    this.handleStop = this.handleStop.bind(this);
+    this.handleRTZ = this.handleRTZ.bind(this);
     this.handlePause = this.handlePause.bind(this);
     this.handlePlaybackSliderChange = this.handlePlaybackSliderChange.bind(this);
   }
@@ -243,9 +244,7 @@ class AudioPlayer extends React.Component {
     }
   }
 
-  handleStop() {
-    // handleReturnToZero
-
+  handleRTZ() {
     // call this.stop function
     // reset cursor to sample frame zero
 
@@ -311,7 +310,7 @@ class AudioPlayer extends React.Component {
 
     return (
       <div>
-        <Stop onStop={this.handleStop}/>
+        <RTZ onRTZ={this.handleRTZ}/>
         <Play onPlay={this.handlePlay} onPause={this.handlePause} isPaused={this.state.isPaused}/>
         <PlaybackTime playbackTime={timeElapsed}/>
         <PlaybackTime playbackTime={timeRemaining}/>
