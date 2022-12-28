@@ -308,31 +308,30 @@ class AudioPlayer extends React.Component {
 
   render() {
     let timeElapsed = "-:--";
-    let timeRemaining = "-:--";
+    let duration = "-:--";
 
     let sliderVal = 0;
     let maxSlider = 100;
     let disableThumb = true;
 
     if (this.state.srcBuf) {
+      const cursor = this.state.cursor;
       const trackLength = this.state.srcBuf.duration;
 
-      timeElapsed = new Date(1000 * (this.state.cursor)).toISOString().substring(15, 19);
-      timeRemaining = new Date(1000 * (trackLength - this.state.cursor)).toISOString().substring(15, 19);
+      timeElapsed = new Date(1000 * (cursor)).toISOString().substring(15, 19);
+      duration = new Date(1000 * (trackLength)).toISOString().substring(15, 19);
 
       sliderVal = Math.floor(this.state.cursor);
       maxSlider = Math.floor(trackLength);
       disableThumb = false;
     }
 
-    timeRemaining = "-" + timeRemaining;
-
     return (
       <div>
         <RTZ onRTZ={this.handleRTZ}/>
         <Play onPlay={this.handlePlay} onPause={this.handlePause} isPlaying={this.state.isPlaying}/>
         <PlaybackTime playbackTime={timeElapsed}/>
-        <PlaybackTime playbackTime={timeRemaining}/>
+        <PlaybackTime playbackTime={duration}/>
         <PlaybackSlider min={0} max={maxSlider} value={sliderVal} disabled={disableThumb} onChange={this.handlePlaybackSliderChange}/>
       </div>
     );
