@@ -86,12 +86,12 @@ class AudioPlayer extends React.Component {
     super(props);
     
     this.state = {
+      srcBuf:  null,
       isPlaying: false,
       cursor: 0,
     }
 
     this.audioCtx = null;
-    this.srcBuf = null;
     this.srcNode = null;
     this.timerID = null;
     this.lastTime = 0;
@@ -110,7 +110,9 @@ class AudioPlayer extends React.Component {
         this.audioCtx.decodeAudioData(downloadedBuffer)
       )
       .then((decodedBuffer) => {
-        this.srcBuf = decodedBuffer;
+        this.setState((state, props) => ({
+          srcBuf: decodedBuffer,
+        }));
       })
       .catch((e) => {
         console.error(`Error: ${e}`);
@@ -170,12 +172,11 @@ class AudioPlayer extends React.Component {
     }
 
     let sampleFrame = Math.floor(this.state.cursor * this.audioCtx.sampleRate);
-    console.log(sampleFrame);
-    let buf = this.sliceAudioBuffer(this.srcBuf, sampleFrame);
+    //console.log(sampleFrame);
+    let buf = this.sliceAudioBuffer(this.state.srcBuf, sampleFrame);
 
     // Set up the AudioBufferSourceNode
     this.srcNode = new AudioBufferSourceNode(this.audioCtx, {
-      //buffer: this.srcBuf,
       buffer: buf,
     });
 
@@ -261,8 +262,8 @@ class AudioPlayer extends React.Component {
     let maxSlider = 100;
     let disableThumb = true;
 
-    if (this.srcBuf) {
-      const trackLength = this.srcBuf.duration;
+    if (this.state.srcBuf) {
+      const trackLength = this.state.srcBuf.duration;
 
       timeElapsed = new Date(1000 * (this.state.cursor)).toISOString().substring(15, 19);
       timeRemaining = new Date(1000 * (trackLength - this.state.cursor)).toISOString().substring(15, 19);
