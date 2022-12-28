@@ -13,15 +13,15 @@ class Play extends React.Component {
 
   handleClick(e) {
     e.preventDefault();
-    if (this.props.isPaused) {
-      this.props.onPlay();
-    } else {
+    if (this.props.isPlaying) {
       this.props.onPause();
+    } else {
+      this.props.onPlay();
     }
   }
 
   render() {
-    const btnText = this.props.isPaused ? "Play" : "Pause";
+    const btnText = this.props.isPlaying ? "Pause" : "Play";
 
     return (
       <button onClick={this.handleClick}>
@@ -86,14 +86,13 @@ class AudioPlayer extends React.Component {
     super(props);
     
     this.state = {
-      isPaused: true,
+      isPlaying: false,
       cursor: 0,
     }
 
     this.audioCtx = null;
     this.srcBuf = null;
     this.srcNode = null;
-    this.isPlaying = false;
     this.timerID = null;
     this.lastTime = 0;
 
@@ -161,16 +160,12 @@ class AudioPlayer extends React.Component {
   handlePlay() {
     if (this.audioCtx.state === "suspended") {
       this.audioCtx.resume().then(() => {
-        this.setState((state, props) => ({
-          isPaused: false,
-        }));
-
-        this.handlePlay()
+        this.handlePlay();
       });
       return;
     }
     
-    if (this.isPlaying) {
+    if (this.state.isPlaying) {
       return;
     }
 
@@ -190,9 +185,8 @@ class AudioPlayer extends React.Component {
     this.srcNode.addEventListener(
       "ended",
       () => {
-        this.isPlaying = false;
         this.setState((state, props) => ({
-          isPaused: true,
+          isPlaying: false,
         }));
         //clearInterval(this.timerID);
         this.srcNode = null;
@@ -202,10 +196,9 @@ class AudioPlayer extends React.Component {
 
     if (this.srcNode) {
       this.srcNode.start(0);
-      this.isPlaying = true;
       this.lastTime = this.audioCtx.currentTime;
       this.setState((state, props) => ({
-        isPaused: false,
+        isPlaying: true,
       }));
       this.timerID = setInterval(
         () => this.tick(),
@@ -218,7 +211,7 @@ class AudioPlayer extends React.Component {
     // call this.stop function and leave cursor as is
 
 
-    if (!this.isPlaying) {
+    if (!this.state.isPlaying) {
       return;
     }
 
@@ -234,7 +227,7 @@ class AudioPlayer extends React.Component {
     // reset cursor to sample frame zero
 
 
-    if (!this.isPlaying) {
+    if (!this.state.isPlaying) {
       this.setState((state, props) => ({
         cursor: 0,
       }));
@@ -251,6 +244,9 @@ class AudioPlayer extends React.Component {
     if (this.srcNode) {
       this.srcNode.stop(0);
     }
+
+    // somehow trigger playback again, but after the "ended" event is handled
+    //this.handlePlay();
   }
 
   handlePlaybackSliderChange(value, thumbIndex) {
@@ -281,7 +277,7 @@ class AudioPlayer extends React.Component {
     return (
       <div>
         <RTZ onRTZ={this.handleRTZ}/>
-        <Play onPlay={this.handlePlay} onPause={this.handlePause} isPaused={this.state.isPaused}/>
+        <Play onPlay={this.handlePlay} onPause={this.handlePause} isPlaying={this.state.isPlaying}/>
         <PlaybackTime playbackTime={timeElapsed}/>
         <PlaybackTime playbackTime={timeRemaining}/>
         <PlaybackSlider min={0} max={maxSlider} value={sliderVal} disabled={disableThumb} onChange={this.handlePlaybackSliderChange}/>
