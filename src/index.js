@@ -76,7 +76,9 @@ function PlaybackSlider(props) {
       max={props.max}
       value={props.value}
       disabled={props.disabled}
-      onAfterChange={props.onChange}
+      onBeforeChange={props.onBeforeChange}
+      onChange={props.onChange}
+      onAfterChange={props.onAfterChange}
     />
   );
 }
@@ -97,19 +99,24 @@ class AudioPlayer extends React.Component {
     this.state = {
       srcBuf:  null,
       isPlaying: false,
-      cursor: 0,
+      //cursor: 0,
+      sliderVal: 0,
     }
 
     this.audioCtx = null;
     this.srcNode = null;
+    this.cursor = 0;
     this.timerID = null;
     this.lastTime = 0;
     this.stopReason = StopReason.End;
+    this.isDragging = false;
 
     this.handlePlay = this.handlePlay.bind(this);
     this.handlePause = this.handlePause.bind(this);
     this.handleRTZ = this.handleRTZ.bind(this);
+    this.handlePlaybackSliderBeforeChange = this.handlePlaybackSliderBeforeChange.bind(this);
     this.handlePlaybackSliderChange = this.handlePlaybackSliderChange.bind(this);
+    this.handlePlaybackSliderAfterChange = this.handlePlaybackSliderAfterChange.bind(this);
   }
 
   componentDidMount() {
@@ -140,9 +147,14 @@ class AudioPlayer extends React.Component {
     const delta = curTime - this.lastTime;
     this.lastTime = curTime;
 
-    this.setState((state, props) => ({
-      cursor: this.state.cursor + delta,
-    }));
+    this.cursor += delta;
+
+    if (!this.isDragging) {
+      this.setState((state, props) => ({
+        //cursor: this.state.cursor + delta,
+        sliderVal: Math.floor(this.cursor),
+      }));
+    }
   }
 
   sliceAudioBuffer(buf, start) {
@@ -181,7 +193,8 @@ class AudioPlayer extends React.Component {
     //  return;
     //}
 
-    let sampleFrame = Math.floor(this.state.cursor * this.audioCtx.sampleRate);
+    //let sampleFrame = Math.floor(this.state.cursor * this.audioCtx.sampleRate);
+    let sampleFrame = Math.floor(this.cursor * this.audioCtx.sampleRate);
     //console.log(sampleFrame);
     let buf = this.sliceAudioBuffer(this.state.srcBuf, sampleFrame);
 
@@ -201,9 +214,11 @@ class AudioPlayer extends React.Component {
         switch (this.stopReason) {
           case StopReason.End:
             clearInterval(this.timerID);
+            this.cursor = 0;
             this.setState((state, props) => ({
               isPlaying: false,
-              cursor: 0,
+              //cursor: 0,
+              sliderVal: Math.floor(this.cursor),
             }));
             break;
           case StopReason.Pause:
@@ -264,8 +279,10 @@ class AudioPlayer extends React.Component {
 
   handleRTZ() {
     if (!this.state.isPlaying) {
+      this.cursor = 0;
       this.setState((state, props) => ({
-        cursor: 0,
+        //cursor: 0,
+        sliderVal: Math.floor(this.cursor),
       }));
 
       return;
@@ -274,8 +291,10 @@ class AudioPlayer extends React.Component {
     if (this.srcNode) {
       clearInterval(this.timerID);
       
+      this.cursor = 0;
       this.setState((state, props) => ({
-        cursor: 0,
+        //cursor: 0,
+        sliderVal: Math.floor(this.cursor),
       }));
 
       this.stopReason = StopReason.RTZ;
@@ -283,12 +302,27 @@ class AudioPlayer extends React.Component {
     }
   }
 
+  handlePlaybackSliderBeforeChange(value, thumbIndex) {
+    this.isDragging = true;
+  }
+
   handlePlaybackSliderChange(value, thumbIndex) {
+    console.log(value, thumbIndex)
+    this.setState((state, props) => ({
+      sliderVal: value,
+    }));
+  }
+
+  handlePlaybackSliderAfterChange(value, thumbIndex) {
     //console.log(value, thumbIndex)
 
+    this.isDragging = false;
+
     if (!this.state.isPlaying) {
+      this.cursor = value;
       this.setState((state, props) => ({
-        cursor: value,
+        //cursor: value,
+        sliderVal: Math.floor(this.cursor),
       }));
 
       return;
@@ -297,8 +331,10 @@ class AudioPlayer extends React.Component {
     if (this.srcNode) {
       clearInterval(this.timerID);
 
+      this.cursor = value;
       this.setState((state, props) => ({
-        cursor: value,
+        //cursor: value,
+        sliderVal: Math.floor(this.cursor),
       }));
       
       this.stopReason = StopReason.Seek;
@@ -307,23 +343,24 @@ class AudioPlayer extends React.Component {
   }
 
   render() {
-    let timeElapsed = "-:--";
-    let duration = "-:--";
-
     let sliderVal = 0;
     let maxSlider = 100;
     let disableThumb = true;
+
+    let timeElapsed = "-:--";
+    let duration = "-:--";
 
     if (this.state.srcBuf) {
       const cursor = this.state.cursor;
       const trackLength = this.state.srcBuf.duration;
 
-      timeElapsed = new Date(1000 * (cursor)).toISOString().substring(15, 19);
-      duration = new Date(1000 * (trackLength)).toISOString().substring(15, 19);
-
-      sliderVal = Math.floor(this.state.cursor);
+      //sliderVal = Math.floor(cursor);
+      sliderVal = this.state.sliderVal;
       maxSlider = Math.floor(trackLength);
       disableThumb = false;
+
+      timeElapsed = new Date(1000 * (sliderVal)).toISOString().substring(15, 19);
+      duration = new Date(1000 * (trackLength)).toISOString().substring(15, 19);
     }
 
     return (
@@ -332,7 +369,15 @@ class AudioPlayer extends React.Component {
         <Play onPlay={this.handlePlay} onPause={this.handlePause} isPlaying={this.state.isPlaying}/>
         <PlaybackTime playbackTime={timeElapsed}/>
         <PlaybackTime playbackTime={duration}/>
-        <PlaybackSlider min={0} max={maxSlider} value={sliderVal} disabled={disableThumb} onChange={this.handlePlaybackSliderChange}/>
+        <PlaybackSlider
+          min={0}
+          max={maxSlider}
+          value={sliderVal}
+          disabled={disableThumb}
+          onBeforeChange={this.handlePlaybackSliderBeforeChange}
+          onChange={this.handlePlaybackSliderChange}
+          onAfterChange={this.handlePlaybackSliderAfterChange}
+        />
       </div>
     );
   }
