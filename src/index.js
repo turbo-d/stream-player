@@ -116,7 +116,7 @@ class AudioPlayer extends React.Component {
     
     this.state = {
       isPaused: true,
-      timeElapsed: new Date(0),
+      cursor: 0,
     }
 
     this.audioCtx = null;
@@ -124,7 +124,7 @@ class AudioPlayer extends React.Component {
     this.srcNode = null;
     this.isPlaying = false;
     this.timerID = null;
-    this.startTime = 0;
+    this.lastTime = 0;
 
     this.handlePlay = this.handlePlay.bind(this);
     this.handleStop = this.handleStop.bind(this);
@@ -155,10 +155,36 @@ class AudioPlayer extends React.Component {
 
   tick() {
     const curTime = this.audioCtx.currentTime;
+    const delta = curTime - this.lastTime;
+    this.lastTime = curTime;
 
     this.setState((state, props) => ({
-      timeElapsed: new Date(1000 * (curTime - this.startTime)),
+      cursor: this.state.cursor + delta,
     }));
+  }
+
+  sliceAudioBuffer(buf, start) {
+    if (!buf) {
+      return null;
+    }
+
+    if (start === 0) {
+      return buf;
+    }
+
+    let srcBufSlice = new AudioBuffer({
+      length: buf.length,
+      numberOfChannels: buf.numberOfChannels,
+      sampleRate: buf.sampleRate,
+    });
+
+    for (let chan = 0; chan < buf.numberOfChannels; chan++) {
+      let chanData = buf.getChannelData(chan);
+      let chanDataSubarray = chanData.subarray(start, chanData.length);
+      srcBufSlice.copyToChannel(chanDataSubarray, chan);
+    }
+
+    return srcBufSlice;
   }
 
   handlePlay() {
@@ -177,9 +203,14 @@ class AudioPlayer extends React.Component {
       return;
     }
 
+    let sampleFrame = Math.floor(this.state.cursor * this.audioCtx.sampleRate);
+    console.log(sampleFrame);
+    let buf = this.sliceAudioBuffer(this.srcBuf, sampleFrame);
+
     // Set up the AudioBufferSourceNode
     this.srcNode = new AudioBufferSourceNode(this.audioCtx, {
-      buffer: this.srcBuf,
+      //buffer: this.srcBuf,
+      buffer: buf,
     });
 
     // Connect the nodes together
@@ -191,9 +222,8 @@ class AudioPlayer extends React.Component {
         this.isPlaying = false;
         this.setState((state, props) => ({
           isPaused: true,
-          timeElapsed: new Date(0),
         }));
-        clearInterval(this.timerID);
+        //clearInterval(this.timerID);
         this.srcNode = null;
       },
       false
@@ -202,7 +232,7 @@ class AudioPlayer extends React.Component {
     if (this.srcNode) {
       this.srcNode.start(0);
       this.isPlaying = true;
-      this.startTime = this.audioCtx.currentTime;
+      this.lastTime = this.audioCtx.currentTime;
       this.setState((state, props) => ({
         isPaused: false,
       }));
@@ -214,41 +244,39 @@ class AudioPlayer extends React.Component {
   }
 
   handleStop() {
+    // handleReturnToZero
+
+    // call this.stop function
+    // reset cursor to sample frame zero
+
+
     if (!this.isPlaying) {
       return;
     }
 
+    clearInterval(this.timerID);
+
+    this.setState((state, props) => ({
+      cursor: 0,
+    }));
+
     if (this.srcNode) {
       this.srcNode.stop(0);
-      //this.isPlaying = false;
-      //this.setState((state, props) => ({
-      //  isPaused: true,
-      //  timeElapsed: new Date(0),
-      //}));
-      //clearInterval(this.timerID);
-      //this.srcNode = null;
     }
   }
 
   handlePause() {
-    if (!this.audioCtx) {
+    // call this.stop function and leave cursor as is
+
+
+    if (!this.isPlaying) {
       return;
     }
 
-    if (this.audioCtx.state === "running") {
-      this.audioCtx.suspend().then(() => {
-        this.setState((state, props) => ({
-          isPaused: true,
-        }));
-      });
-      return;
-    } else if (this.audioCtx.state === "suspended") {
-      this.audioCtx.resume().then(() => {
-        this.setState((state, props) => ({
-          isPaused: false,
-        }));
-      });
-      return;
+    clearInterval(this.timerID);
+
+    if (this.srcNode) {
+      this.srcNode.stop(0);
     }
   }
 
@@ -259,25 +287,19 @@ class AudioPlayer extends React.Component {
   render() {
     let timeElapsed = "-:--";
     let timeRemaining = "-:--";
-    //let completed = 0;
+
+    let sliderVal = 0;
     let maxSlider = 100;
-    let timeElapsedSecs = 0;
     let disableThumb = true;
 
     if (this.srcBuf) {
-      timeElapsed = this.state.timeElapsed.toISOString().substring(15, 19);
-
       const trackLength = this.srcBuf.duration;
-      const minElapsed = this.state.timeElapsed.getMinutes();
-      const secElapsed = this.state.timeElapsed.getSeconds() + (60 * minElapsed);
-      timeElapsedSecs = secElapsed;
 
-      timeRemaining = new Date(1000 * (trackLength - secElapsed)).toISOString().substring(15, 19);
+      timeElapsed = new Date(1000 * (this.state.cursor)).toISOString().substring(15, 19);
+      timeRemaining = new Date(1000 * (trackLength - this.state.cursor)).toISOString().substring(15, 19);
 
-      //completed = 100 * (secElapsed / trackLength);
-
+      sliderVal = Math.floor(this.state.cursor);
       maxSlider = Math.floor(trackLength);
-
       disableThumb = false;
     }
 
@@ -289,7 +311,7 @@ class AudioPlayer extends React.Component {
         <Play onPlay={this.handlePlay} onPause={this.handlePause} isPaused={this.state.isPaused}/>
         <PlaybackTime playbackTime={timeElapsed}/>
         <PlaybackTime playbackTime={timeRemaining}/>
-        <PlaybackSlider min={0} max={maxSlider} value={timeElapsedSecs} disabled={disableThumb} onChange={this.handlePlaybackSliderChange}/>
+        <PlaybackSlider min={0} max={maxSlider} value={sliderVal} disabled={disableThumb} onChange={this.handlePlaybackSliderChange}/>
       </div>
     );
   }
