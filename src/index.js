@@ -81,6 +81,15 @@ function PlaybackSlider(props) {
   );
 }
 
+
+const StopReason = Object.freeze({
+  Undefined: "undefined",
+  End: "end",
+  Pause: "pause",
+  RTZ: "rtz",
+  Seek: "seek",
+})
+
 class AudioPlayer extends React.Component {
   constructor(props) {
     super(props);
@@ -95,6 +104,7 @@ class AudioPlayer extends React.Component {
     this.srcNode = null;
     this.timerID = null;
     this.lastTime = 0;
+    this.stopReason = StopReason.End;
 
     this.handlePlay = this.handlePlay.bind(this);
     this.handlePause = this.handlePause.bind(this);
@@ -145,7 +155,7 @@ class AudioPlayer extends React.Component {
     }
 
     let srcBufSlice = new AudioBuffer({
-      length: buf.length,
+      length: buf.length - start,
       numberOfChannels: buf.numberOfChannels,
       sampleRate: buf.sampleRate,
     });
@@ -167,9 +177,9 @@ class AudioPlayer extends React.Component {
       return;
     }
     
-    if (this.state.isPlaying) {
-      return;
-    }
+    //if (this.state.isPlaying) {
+    //  return;
+    //}
 
     let sampleFrame = Math.floor(this.state.cursor * this.audioCtx.sampleRate);
     //console.log(sampleFrame);
@@ -186,11 +196,38 @@ class AudioPlayer extends React.Component {
     this.srcNode.addEventListener(
       "ended",
       () => {
-        this.setState((state, props) => ({
-          isPlaying: false,
-        }));
-        //clearInterval(this.timerID);
         this.srcNode = null;
+
+        switch (this.stopReason) {
+          case StopReason.End:
+            clearInterval(this.timerID);
+            this.setState((state, props) => ({
+              isPlaying: false,
+              cursor: 0,
+            }));
+            break;
+          case StopReason.Pause:
+            //this.setState((state, props) => ({
+            //  isPlaying: false,
+            //}));
+            break;
+          case StopReason.RTZ:
+            //this.setState((state, props) => ({
+            //  cursor: 0,
+            //}));
+            this.handlePlay();
+            break;
+          case StopReason.Seek:
+            //this.setState((state, props) => ({
+            //  cursor: 0,
+            //}));
+            this.handlePlay();
+            break;
+          default:
+            console.error("Unknown StopReason");
+        }
+
+        this.stopReason = StopReason.End;
       },
       false
     )
@@ -209,25 +246,23 @@ class AudioPlayer extends React.Component {
   }
 
   handlePause() {
-    // call this.stop function and leave cursor as is
-
-
     if (!this.state.isPlaying) {
       return;
     }
 
-    clearInterval(this.timerID);
-
     if (this.srcNode) {
+      clearInterval(this.timerID);
+
+      this.setState((state, props) => ({
+        isPlaying: false,
+      }));
+
+      this.stopReason = StopReason.Pause;
       this.srcNode.stop(0);
     }
   }
 
   handleRTZ() {
-    // call this.stop function
-    // reset cursor to sample frame zero
-
-
     if (!this.state.isPlaying) {
       this.setState((state, props) => ({
         cursor: 0,
@@ -236,22 +271,39 @@ class AudioPlayer extends React.Component {
       return;
     }
 
-    clearInterval(this.timerID);
-
-    this.setState((state, props) => ({
-      cursor: 0,
-    }));
-
     if (this.srcNode) {
+      clearInterval(this.timerID);
+      
+      this.setState((state, props) => ({
+        cursor: 0,
+      }));
+
+      this.stopReason = StopReason.RTZ;
       this.srcNode.stop(0);
     }
-
-    // somehow trigger playback again, but after the "ended" event is handled
-    //this.handlePlay();
   }
 
   handlePlaybackSliderChange(value, thumbIndex) {
-    console.log(value, thumbIndex)
+    //console.log(value, thumbIndex)
+
+    if (!this.state.isPlaying) {
+      this.setState((state, props) => ({
+        cursor: value,
+      }));
+
+      return;
+    }
+
+    if (this.srcNode) {
+      clearInterval(this.timerID);
+
+      this.setState((state, props) => ({
+        cursor: value,
+      }));
+      
+      this.stopReason = StopReason.Seek;
+      this.srcNode.stop(0);
+    }
   }
 
   render() {
