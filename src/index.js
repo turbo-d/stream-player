@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import ReactSlider from 'react-slider';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
@@ -94,6 +95,21 @@ class PlaybackProgressBar extends React.Component {
   }
 }
 
+function PlaybackSlider(props) {
+  return (
+    <ReactSlider
+      className="customSlider"
+      trackClassName="customSlider-track"
+      thumbClassName="customSlider-thumb"
+      min={props.min}
+      max={props.max}
+      value={props.value}
+      disabled={props.disabled}
+      onAfterChange={props.onChange}
+    />
+  );
+}
+
 class AudioPlayer extends React.Component {
   constructor(props) {
     super(props);
@@ -113,6 +129,7 @@ class AudioPlayer extends React.Component {
     this.handlePlay = this.handlePlay.bind(this);
     this.handleStop = this.handleStop.bind(this);
     this.handlePause = this.handlePause.bind(this);
+    this.handlePlaybackSliderChange = this.handlePlaybackSliderChange.bind(this);
   }
 
   componentDidMount() {
@@ -235,10 +252,17 @@ class AudioPlayer extends React.Component {
     }
   }
 
+  handlePlaybackSliderChange(value, thumbIndex) {
+    console.log(value, thumbIndex)
+  }
+
   render() {
     let timeElapsed = "-:--";
     let timeRemaining = "-:--";
     let completed = 0;
+    let maxSlider = 100;
+    let timeElapsedSecs = 0;
+    let disableThumb = true;
 
     if (this.srcBuf) {
       timeElapsed = this.state.timeElapsed.toISOString().substring(15, 19);
@@ -246,10 +270,15 @@ class AudioPlayer extends React.Component {
       const trackLength = this.srcBuf.duration;
       const minElapsed = this.state.timeElapsed.getMinutes();
       const secElapsed = this.state.timeElapsed.getSeconds() + (60 * minElapsed);
+      timeElapsedSecs = secElapsed;
 
       timeRemaining = new Date(1000 * (trackLength - secElapsed)).toISOString().substring(15, 19);
 
       completed = 100 * (secElapsed / trackLength);
+
+      maxSlider = Math.floor(trackLength);
+
+      disableThumb = false;
     }
 
     timeRemaining = "-" + timeRemaining;
@@ -261,6 +290,7 @@ class AudioPlayer extends React.Component {
         <PlaybackTime playbackTime={timeElapsed}/>
         <PlaybackTime playbackTime={timeRemaining}/>
         <PlaybackProgressBar completed={completed}/>
+        <PlaybackSlider min={0} max={maxSlider} value={timeElapsedSecs} disabled={disableThumb} onChange={this.handlePlaybackSliderChange}/>
       </div>
     );
   }
