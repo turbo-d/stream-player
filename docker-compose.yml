@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  #server:
+  #  build:
+  #    context: ./server
+  #    dockerfile: Dockerfile
+  #  ports:
+  #    - 8080:8080
+  #  container_name: server
+  web-player:
+    build:
+      context: ./web-player
+      dockerfile: Dockerfile
+    env_file: ./web-player/.env
+    ports:
+      - 3000:3000
+    volumes:
+      - ./web-player/:/app:delegated
+      - /app/node_modules
+    container_name: web-player
