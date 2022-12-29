@@ -16,9 +16,9 @@ const StopReason = Object.freeze({
 class AudioPlayer extends React.Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
-      srcBuf:  null,
+      srcBuf: null,
       isPlaying: false,
       seek: 0,
     }
@@ -107,7 +107,7 @@ class AudioPlayer extends React.Component {
       });
       return;
     }
-    
+
     //if (this.state.isPlaying) {
     //  return;
     //}
@@ -133,12 +133,12 @@ class AudioPlayer extends React.Component {
             clearInterval(this.timerID);
             this.cursor = 0;
             this.setState((state, props) => ({
-                isPlaying: false,
+              isPlaying: false,
             }));
             if (!this.isDragging) {
-                this.setState((state, props) => ({
-                    seek: Math.floor(this.cursor),
-                }));
+              this.setState((state, props) => ({
+                seek: Math.floor(this.cursor),
+              }));
             }
             break;
           case StopReason.Pause:
@@ -200,7 +200,7 @@ class AudioPlayer extends React.Component {
 
     if (this.srcNode) {
       clearInterval(this.timerID);
-      
+
       this.cursor = 0;
       this.setState((state, props) => ({
         seek: Math.floor(this.cursor),
@@ -240,7 +240,7 @@ class AudioPlayer extends React.Component {
       this.setState((state, props) => ({
         seek: Math.floor(this.cursor),
       }));
-      
+
       this.stopReason = StopReason.Seek;
       this.srcNode.stop(0);
     }
@@ -268,10 +268,10 @@ class AudioPlayer extends React.Component {
 
     return (
       <div>
-        <RTZ onRTZ={this.handleRTZ}/>
-        <Play onPlay={this.handlePlay} onPause={this.handlePause} isPlaying={this.state.isPlaying}/>
-        <PlaybackTime playbackTime={timeElapsed}/>
-        <PlaybackTime playbackTime={duration}/>
+        <RTZ onRTZ={this.handleRTZ} />
+        <Play onPlay={this.handlePlay} onPause={this.handlePause} isPlaying={this.state.isPlaying} />
+        <PlaybackTime playbackTime={timeElapsed} />
+        <PlaybackTime playbackTime={duration} />
         <PlaybackSlider
           min={0}
           max={maxSlider}

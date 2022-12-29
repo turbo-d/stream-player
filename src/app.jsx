@@ -4,7 +4,7 @@ import AudioPlayer from './audioPlayer';
 function App() {
   return (
     <div>
-      <AudioPlayer/>
+      <AudioPlayer />
     </div>
   );
 }
