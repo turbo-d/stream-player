@@ -1,10 +1,32 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    env_file:
+      - ./server/.env
+    ports:
+      - 5432:5432
+    volumes:
+      - stream-player-server-postgres:/var/lib/postgresql/data
+  pgadmin:
+    container_name: stream-player-pgadmin4
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
   server:
     build:
       context: ./server
       dockerfile: Dockerfile
+    env_file:
+      - ./server/.env
+    depends_on:
+      - db
     ports:
       - 8080:8080
     volumes:
@@ -21,3 +43,6 @@ services:
       - ./web-player/:/app:delegated
       - /app/node_modules
     container_name: web-player
+
+volumes:
+  stream-player-server-postgres:
