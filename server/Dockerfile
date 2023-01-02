@@ -2,7 +2,7 @@
 ## Build
 ##
 
-FROM golang:1.14.6-alpine3.12 as builder
+FROM golang:1.19.4-alpine3.17 as builder
 
 WORKDIR /go/src/github.com/turbo-d/stream-player/server
 

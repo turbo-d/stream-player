@@ -1,13 +1,15 @@
 version: '3.8'
 
 services:
-  #server:
-  #  build:
-  #    context: ./server
-  #    dockerfile: Dockerfile
-  #  ports:
-  #    - 8080:8080
-  #  container_name: server
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    volumes:
+      - ./audio-files:/go/src/github.com/turbo-d/stream-player/audio-files
+    container_name: server
   web-player:
     build:
       context: ./web-player
