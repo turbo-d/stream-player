@@ -41,11 +41,15 @@ class AudioPlayer extends React.Component {
 
   componentDidMount() {
     this.audioCtx = new AudioContext();
-    fetch("Audiorezout-Resurgence.mp3")
-      .then((response) => response.arrayBuffer())
-      .then((downloadedBuffer) =>
-        this.audioCtx.decodeAudioData(downloadedBuffer)
-      )
+
+    const url = "http://localhost:8080/";
+    fetch(url)
+      .then((response) => {
+        return response.arrayBuffer()
+      })
+      .then((downloadedBuffer) => {
+        return this.audioCtx.decodeAudioData(downloadedBuffer)
+      })
       .then((decodedBuffer) => {
         this.setState((state, props) => ({
           srcBuf: decodedBuffer,
@@ -255,7 +259,6 @@ class AudioPlayer extends React.Component {
     let duration = "-:--";
 
     if (this.state.srcBuf) {
-      const cursor = this.state.cursor;
       const trackLength = this.state.srcBuf.duration;
 
       seekLocation = this.state.seek;

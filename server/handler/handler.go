@@ -29,7 +29,9 @@ func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getMP3(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-type", "audio/basic")
+	w.Header().Set("Content-Type", "audio/basic")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET")
 
 	content, err := os.ReadFile("/go/src/github.com/turbo-d/stream-player/audio-files/Audiorezout-Resurgence.mp3")
 	if err != nil {
