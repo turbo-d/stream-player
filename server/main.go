@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/turbo-d/stream-player/server/db"
 	"github.com/turbo-d/stream-player/server/handler"
 )
 
@@ -20,8 +21,17 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error occurred: %s", err.Error())
 	}
+	dbUser, dbPassword, dbName :=
+		os.Getenv("POSTGRES_USER"),
+		os.Getenv("POSTGRES_PASSWORD"),
+		os.Getenv("POSTGRES_DB")
+	database, err := db.Initialize(dbUser, dbPassword, dbName)
+	if err != nil {
+		log.Fatalf("Could not set up database: %v", err)
+	}
+	defer database.Conn.Close()
 
-	httpHandler := handler.NewHandler()
+	httpHandler := handler.NewHandler(database)
 	server := &http.Server{
 		Handler: httpHandler,
 	}

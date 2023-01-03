@@ -6,13 +6,18 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
+	"github.com/turbo-d/stream-player/server/db"
 )
 
-func NewHandler() http.Handler {
+var dbInstance db.Database
+
+func NewHandler(db db.Database) http.Handler {
 	router := chi.NewRouter()
+	dbInstance = db
 	router.MethodNotAllowed(methodNotAllowedHandler)
 	router.NotFound(notFoundHandler)
 	router.Get("/", getMP3)
+	router.Route("/tracks", tracks)
 	return router
 }
 
