@@ -18,6 +18,7 @@ func NewHandler(db db.Database) http.Handler {
 	router.NotFound(notFoundHandler)
 	router.Get("/", getMP3)
 	router.Route("/tracks", tracks)
+	router.Route("/playback", playback)
 	return router
 }
 
