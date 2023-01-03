@@ -4,6 +4,8 @@ import Play from './play';
 import PlaybackSlider from './playbackSlider';
 import PlaybackTime from './playbackTime';
 import RTZ from './rtz';
+import TrackArtist from './trackArtist';
+import TrackTitle from './trackTitle';
 
 const StopReason = Object.freeze({
   Undefined: "undefined",
@@ -258,6 +260,13 @@ class AudioPlayer extends React.Component {
     let timeElapsed = "-:--";
     let duration = "-:--";
 
+    let trackTitle = "";
+    let trackArtist = "";
+    if (this.props.track) {
+      trackTitle = this.props.track.title;
+      trackArtist = this.props.track.artist;
+    }
+
     if (this.state.srcBuf) {
       const trackLength = this.state.srcBuf.duration;
 
@@ -284,6 +293,8 @@ class AudioPlayer extends React.Component {
           onChange={this.handlePlaybackSliderChange}
           onAfterChange={this.handlePlaybackSliderAfterChange}
         />
+        <TrackTitle title={trackTitle}/>
+        <TrackArtist artist={trackArtist}/>
       </div>
     );
   }

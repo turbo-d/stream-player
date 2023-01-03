@@ -8,6 +8,8 @@ class TrackList extends React.Component {
     this.state = {
       tracks: []
     }
+
+    this.handleTrackSelect = this.handleTrackSelect.bind(this);
   }
 
   componentDidMount() {
@@ -24,9 +26,13 @@ class TrackList extends React.Component {
       });
   }
 
+  handleTrackSelect(track) {
+    this.props.onTrackSelect(track);
+  }
+
   render() {
     const trackList = this.state.tracks?.map((track) => (
-      <Track title={track.title} artist={track.artist} key={track.id}/>
+      <Track track={track} key={track.id} onTrackSelect={this.handleTrackSelect}/>
     ));
 
     return (
