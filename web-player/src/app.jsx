@@ -1,10 +1,12 @@
 import React from 'react';
 import AudioPlayer from './audioPlayer';
+import TrackList from './trackList';
 
 function App() {
   return (
     <div>
-      <AudioPlayer />
+      <TrackList/>
+      <AudioPlayer/>
     </div>
   );
 }
