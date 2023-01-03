@@ -2,12 +2,6 @@ import React from 'react';
 
 import Track from './track';
 
-const DATA = [
-  { title: "Eat", artist: "1", id: "1" },
-  { title: "Sleep", artist: "2", id: "2" },
-  { title: "Repeat", artist: "3", id: "3" }
-]
-
 class TrackList extends React.Component {
   constructor(props) {
     super(props)
