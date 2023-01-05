@@ -8,6 +8,7 @@ const StopReason = Object.freeze({
   Pause: "pause",
   RTZ: "rtz",
   Seek: "seek",
+  Switch: "switch",
 })
 
 class App extends React.Component {
@@ -38,21 +39,6 @@ class App extends React.Component {
 
   componentDidMount() {
     this.audioCtx = new AudioContext();
-
-    //const url = "http://localhost:8080/";
-    //fetch(url)
-    //  .then((response) => {
-    //    return response.arrayBuffer()
-    //  })
-    //  .then((downloadedBuffer) => {
-    //    return this.audioCtx.decodeAudioData(downloadedBuffer)
-    //  })
-    //  .then((decodedBuffer) => {
-    //    this.srcBuf = decodedBuffer;
-    //  })
-    //  .catch((e) => {
-    //    console.error(`Error: ${e}`);
-    //  });
   }
 
   componentWillUnmount() {
@@ -105,8 +91,9 @@ class App extends React.Component {
     //console.log("selected ", track);
     // track {title, artist, seekLocation, duration, isPlaying}
 
-    if (this.state.currentTrack && this.state.currentTrack.isPlaying) {
-      this.srcNode.stop(0);
+    if (this.state.currentTrack) {
+      //this.srcNode.stop(0);
+      this.handleTrackSwitch();
     }
 
     let track = {
@@ -190,6 +177,7 @@ class App extends React.Component {
             }
             break;
           case StopReason.Pause:
+          case StopReason.Switch:
             break;
           case StopReason.RTZ:
             this.handlePlay();
@@ -263,6 +251,33 @@ class App extends React.Component {
       }));
 
       this.stopReason = StopReason.RTZ;
+      this.srcNode.stop(0);
+    }
+  }
+
+  handleTrackSwitch() {
+    if (!this.state.currentTrack.isPlaying) {
+      this.cursor = 0;
+      let currentTrack = this.state.currentTrack;
+      currentTrack.seekLocation = Math.floor(this.cursor);
+      this.setState((state, props) => ({
+        currentTrack: currentTrack,
+      }));
+
+      return;
+    }
+
+    if (this.srcNode) {
+      clearInterval(this.timerID);
+
+      this.cursor = 0;
+      let currentTrack = this.state.currentTrack;
+      currentTrack.seekLocation = Math.floor(this.cursor);
+      this.setState((state, props) => ({
+        currentTrack: currentTrack,
+      }));
+
+      this.stopReason = StopReason.Switch;
       this.srcNode.stop(0);
     }
   }
