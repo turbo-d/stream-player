@@ -14,7 +14,7 @@ class RTZ extends React.Component {
 
   render() {
     return (
-      <button onClick={this.handleClick}>
+      <button disabled={this.props.disabled} onClick={this.handleClick}>
         RTZ
       </button>
     );

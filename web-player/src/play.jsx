@@ -20,7 +20,7 @@ class Play extends React.Component {
     const btnText = this.props.isPlaying ? "Pause" : "Play";
 
     return (
-      <button onClick={this.handleClick}>
+      <button disabled={this.props.disabled} onClick={this.handleClick}>
         {btnText}
       </button>
     );

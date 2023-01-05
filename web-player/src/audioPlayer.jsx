@@ -54,6 +54,7 @@ class AudioPlayer extends React.Component {
     let trackTitle = "";
     let trackArtist = "";
 
+    let disableTransport = true;
     let isPlaying = false;
 
     if (this.props.track) {
@@ -69,13 +70,14 @@ class AudioPlayer extends React.Component {
       timeElapsed = new Date(1000 * (seekLocation)).toISOString().substring(15, 19);
       duration = new Date(1000 * (trackLength)).toISOString().substring(15, 19);
 
+      disableTransport = false;
       isPlaying = this.props.track.isPlaying;
     }
 
     return (
       <div>
-        <RTZ onRTZ={this.handleRTZ} />
-        <Play onPlay={this.handlePlay} onPause={this.handlePause} isPlaying={isPlaying} />
+        <RTZ disabled={disableTransport} onRTZ={this.handleRTZ} />
+        <Play disabled={disableTransport} onPlay={this.handlePlay} onPause={this.handlePause} isPlaying={isPlaying} />
         <PlaybackTime playbackTime={timeElapsed} />
         <PlaybackTime playbackTime={duration} />
         <PlaybackSlider
