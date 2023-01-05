@@ -46,7 +46,6 @@ class AudioPlayer extends React.Component {
   render() {
     let seekLocation = 0;
     let maxSlider = 100;
-    let disableThumb = true;
 
     let timeElapsed = "-:--";
     let duration = "-:--";
@@ -63,7 +62,6 @@ class AudioPlayer extends React.Component {
 
       seekLocation = this.props.track.seekLocation;
       maxSlider = Math.floor(this.props.track.duration);
-      disableThumb = false;
 
       timeElapsed = new Date(1000 * (seekLocation)).toISOString().substring(15, 19);
       duration = new Date(1000 * (Math.ceil(this.props.track.duration))).toISOString().substring(15, 19);
@@ -82,7 +80,7 @@ class AudioPlayer extends React.Component {
           min={0}
           max={maxSlider}
           value={seekLocation}
-          disabled={disableThumb}
+          disabled={disableTransport}
           onBeforeChange={this.handlePlaybackSliderBeforeChange}
           onChange={this.handlePlaybackSliderChange}
           onAfterChange={this.handlePlaybackSliderAfterChange}
