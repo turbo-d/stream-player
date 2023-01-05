@@ -2,6 +2,8 @@ import React from 'react';
 import AudioPlayer from './audioPlayer';
 import TrackList from './trackList';
 
+// track: {title, artist, duration, isPlaying, seekLocation, isAudioLoaded}
+
 const StopReason = Object.freeze({
   Undefined: "undefined",
   End: "end",
@@ -88,11 +90,7 @@ class App extends React.Component {
   }
 
   handleTrackSelect(trackMetaData) {
-    //console.log("selected ", track);
-    // track {title, artist, seekLocation, duration, isPlaying}
-
     if (this.state.currentTrack) {
-      //this.srcNode.stop(0);
       this.handleTrackSwitch();
     }
 
@@ -110,7 +108,6 @@ class App extends React.Component {
 
 
     const url = "http://localhost:8080/playback/" + trackMetaData.id;
-    console.log(url);
     fetch(url)
       .then((response) => {
         return response.arrayBuffer()
@@ -140,10 +137,6 @@ class App extends React.Component {
       });
       return;
     }
-
-    //if (this.state.currentTrack.isPlaying) {
-    //  return;
-    //}
 
     let sampleFrame = Math.floor(this.cursor * this.audioCtx.sampleRate);
     let buf = this.sliceAudioBuffer(this.srcBuf, sampleFrame);

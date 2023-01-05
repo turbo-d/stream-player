@@ -9,7 +9,6 @@ class Track extends React.Component {
 
   handleClick(e) {
     e.preventDefault();
-    //console.log(this.props.title, " clicked");
     this.props.onTrackSelect(this.props.track);
   }
 
