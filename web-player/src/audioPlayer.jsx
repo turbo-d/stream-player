@@ -61,14 +61,12 @@ class AudioPlayer extends React.Component {
       trackTitle = this.props.track.title;
       trackArtist = this.props.track.artist;
 
-      const trackLength = this.props.track.duration;
-
       seekLocation = this.props.track.seekLocation;
-      maxSlider = Math.floor(trackLength);
+      maxSlider = Math.floor(this.props.track.duration);
       disableThumb = false;
 
       timeElapsed = new Date(1000 * (seekLocation)).toISOString().substring(15, 19);
-      duration = new Date(1000 * (trackLength)).toISOString().substring(15, 19);
+      duration = new Date(1000 * (Math.ceil(this.props.track.duration))).toISOString().substring(15, 19);
 
       disableTransport = !this.props.track.isAudioLoaded;
       isPlaying = this.props.track.isPlaying;
