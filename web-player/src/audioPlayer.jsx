@@ -70,7 +70,7 @@ class AudioPlayer extends React.Component {
       timeElapsed = new Date(1000 * (seekLocation)).toISOString().substring(15, 19);
       duration = new Date(1000 * (trackLength)).toISOString().substring(15, 19);
 
-      disableTransport = false;
+      disableTransport = !this.props.track.isAudioLoaded;
       isPlaying = this.props.track.isPlaying;
     }
 
