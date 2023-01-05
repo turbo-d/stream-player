@@ -12,14 +12,15 @@ func tracks(router chi.Router) {
 }
 
 func getAllTracks(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET")
+
 	tracks, err := dbInstance.GetAllTracks()
 	if err != nil {
 		render.Render(w, r, ServerErrorRenderer(err))
 		return
 	}
 
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET")
 	if err := render.Render(w, r, tracks); err != nil {
 		render.Render(w, r, ErrorRenderer(err))
 	}

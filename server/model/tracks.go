@@ -5,10 +5,11 @@ import (
 )
 
 type Track struct {
-	ID          int    `json:"id"`
-	Title       string `json:"title"`
-	Artist      string `json:"artist"`
-	RelLocation string `json:"rel_location"`
+	ID          int     `json:"id"`
+	Title       string  `json:"title"`
+	Artist      string  `json:"artist"`
+	RelLocation string  `json:"rel_location"`
+	Duration    float64 `json:"duration"`
 }
 
 type TrackList struct {

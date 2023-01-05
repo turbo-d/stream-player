@@ -97,7 +97,7 @@ class App extends React.Component {
     let track = {
       title: trackMetaData.title,
       artist: trackMetaData.artist,
-      duration: 0,
+      duration: trackMetaData.duration,
       isPlaying: false,
       seekLocation: 0,
       isAudioLoaded: false,
@@ -118,7 +118,6 @@ class App extends React.Component {
       .then((decodedBuffer) => {
         this.srcBuf = decodedBuffer;
         let currentTrack = this.state.currentTrack;
-        currentTrack.duration = this.srcBuf.duration;
         currentTrack.isAudioLoaded = true;
         this.setState((state, props) => ({
           currentTrack: currentTrack,

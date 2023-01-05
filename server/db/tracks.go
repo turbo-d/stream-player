@@ -14,7 +14,7 @@ func (db Database) GetAllTracks() (*model.TrackList, error) {
 	}
 	for rows.Next() {
 		var track model.Track
-		err := rows.Scan(&track.ID, &track.Title, &track.Artist, &track.RelLocation)
+		err := rows.Scan(&track.ID, &track.Title, &track.Artist, &track.RelLocation, &track.Duration)
 		if err != nil {
 			return list, err
 		}
@@ -27,7 +27,7 @@ func (db Database) GetTrackById(trackID int) (model.Track, error) {
 	track := model.Track{}
 	query := `SELECT * FROM tracks WHERE track_id = $1;`
 	row := db.Conn.QueryRow(query, trackID)
-	switch err := row.Scan(&track.ID, &track.Title, &track.Artist, &track.RelLocation); err {
+	switch err := row.Scan(&track.ID, &track.Title, &track.Artist, &track.RelLocation, &track.Duration); err {
 	case sql.ErrNoRows:
 		return track, ErrNoMatch
 	default:
