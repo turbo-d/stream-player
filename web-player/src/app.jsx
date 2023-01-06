@@ -1,3 +1,4 @@
+import './app.css';
 import React from 'react';
 import AudioPlayer from './audioPlayer';
 import TrackList from './trackList';
@@ -319,17 +320,22 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
-        <TrackList onTrackSelect={this.handleTrackSelect}/>
-        <AudioPlayer
-          track={this.state.currentTrack}
-          onPlay={this.handlePlay}
-          onPause={this.handlePause}
-          onRTZ={this.handleRTZ}
-          onBeforeSeek={this.handleOnBeforeSeek}
-          onSeek={this.handleOnSeek}
-          onAfterSeek={this.handleOnAfterSeek}
-        />
+      <div className="app">
+        <div className="app__header"></div>
+        <div className="app__body">
+          <TrackList onTrackSelect={this.handleTrackSelect}/>
+        </div>
+        <div className="app__footer">
+          <AudioPlayer
+            track={this.state.currentTrack}
+            onPlay={this.handlePlay}
+            onPause={this.handlePause}
+            onRTZ={this.handleRTZ}
+            onBeforeSeek={this.handleOnBeforeSeek}
+            onSeek={this.handleOnSeek}
+            onAfterSeek={this.handleOnAfterSeek}
+          />
+        </div>
       </div>
     );
   }

@@ -1,0 +1,58 @@
+:root {
+    --main-color: rgb(104, 117, 217);
+    --main-color-hover: rgb(104, 117, 217, 0.2);
+    --track-color: #ddd;
+}
+
+.playbackSlider {
+    float: left;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+.playbackSlider__inner{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 1.25em;
+    width: 100%;
+    transform: translate(-50%, -50%);
+}
+
+.customSlider {
+    /* max width of your slider */
+    max-width: 100%;
+    /* Optional: Only If you want to center your slider in the page */
+    margin: auto;
+}
+
+.customSlider-track {
+    /* Top value to align your track to the center of your thumb */
+    top: 0.5em;
+    /* thickness of the track */
+    height: 0.25em;
+    /* default color of your track */
+    background: var(--track-color);
+}
+
+.customSlider-track.customSlider-track-0 {
+    /* color of the track before the thumb */
+    background: var(--main-color);
+}
+
+.customSlider-thumb {
+    cursor: pointer;
+    /*color for the thumb */
+    background: var(--main-color);
+    /* shape of the thumb: circle */
+    width: 1.25em;
+    height: 1.25em;
+    border-radius: 100%;
+    /* remove default outline when selected */
+    outline: none;
+}
+
+.customSlider-thumb:hover {
+    box-shadow: 0 0 0 8px var(--main-color-hover);
+}

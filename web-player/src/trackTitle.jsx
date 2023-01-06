@@ -1,10 +1,9 @@
+import './trackTitle.css';
 import React from 'react';
 
 function TrackTitle(props) {
   return (
-    <div>
-      <h2>{props.title}</h2>
-    </div>
+    <span className="trackTitle">{props.title}</span>
   );
 }
 

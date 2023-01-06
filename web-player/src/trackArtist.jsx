@@ -1,10 +1,9 @@
+import './trackArtist.css';
 import React from 'react';
 
 function TrackArtist(props) {
   return (
-    <div>
-      <h3>{props.artist}</h3>
-    </div>
+    <span className="trackArtist">{props.artist}</span>
   );
 }
 

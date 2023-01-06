@@ -1,3 +1,5 @@
+import './audioPlayer.css';
+
 import React from 'react';
 
 import Play from './play';
@@ -71,22 +73,49 @@ class AudioPlayer extends React.Component {
     }
 
     return (
-      <div>
-        <RTZ disabled={disableTransport} onRTZ={this.handleRTZ} />
-        <Play disabled={disableTransport} onPlay={this.handlePlay} onPause={this.handlePause} isPlaying={isPlaying} />
-        <PlaybackTime playbackTime={timeElapsed} />
-        <PlaybackTime playbackTime={duration} />
-        <PlaybackSlider
-          min={0}
-          max={maxSlider}
-          value={seekLocation}
-          disabled={disableTransport}
-          onBeforeChange={this.handlePlaybackSliderBeforeChange}
-          onChange={this.handlePlaybackSliderChange}
-          onAfterChange={this.handlePlaybackSliderAfterChange}
-        />
-        <TrackTitle title={trackTitle}/>
-        <TrackArtist artist={trackArtist}/>
+      <div className="audioPlayer">
+        <div className="audioPlayer__trackData">
+          <div className="audioPlayer__trackDataOuter">
+            <div className="audioPlayer__trackDataInner">
+              <div className="audioPlayer__trackDataTitle">
+                <TrackTitle title={trackTitle}/>
+              </div>
+              <div className="audioPlayer__trackDataArtist">
+                <TrackArtist artist={trackArtist}/>
+              </div>
+            </div>
+            <div className="audioPlayer__trackDataGradient"/>
+          </div>
+        </div>
+        <div className="audioPlayer__transport">
+          <div className="audioPlayer__transportTop">
+            <div className="audioPlayer__rtz">
+              <RTZ disabled={disableTransport} onRTZ={this.handleRTZ} />
+            </div>
+            <div className="audioPlayer__play">
+              <Play disabled={disableTransport} onPlay={this.handlePlay} onPause={this.handlePause} isPlaying={isPlaying} />
+            </div>
+          </div>
+          <div className="audioPlayer__transportBottom">
+            <div className="audioPlayer__playbackTime--left">
+              <PlaybackTime playbackTime={timeElapsed} />
+            </div>
+            <div className="audioPlayer__slider">
+              <PlaybackSlider
+                min={0}
+                max={maxSlider}
+                value={seekLocation}
+                disabled={disableTransport}
+                onBeforeChange={this.handlePlaybackSliderBeforeChange}
+                onChange={this.handlePlaybackSliderChange}
+                onAfterChange={this.handlePlaybackSliderAfterChange}
+              />
+            </div>
+            <div className="audioPlayer__playbackTime--right">
+              <PlaybackTime playbackTime={duration} />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

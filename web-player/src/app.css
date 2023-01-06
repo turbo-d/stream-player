@@ -1,0 +1,26 @@
+.app {
+    float: left;
+    height: 100%;
+    width: 100%;
+}
+
+.app__header {
+    float: left;
+    height: 4em;
+    width: 100%;
+    overflow: hidden;
+}
+
+.app__body {
+    float: left;
+    height: calc(100% - 10em);
+    width: 100%;
+    overflow: hidden;
+}
+
+.app__footer {
+    float: left;
+    height: 6em;
+    width: 100%;
+    overflow: hidden;
+}
