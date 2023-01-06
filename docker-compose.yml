@@ -41,8 +41,9 @@ services:
       - 3000:3000
     volumes:
       - ./web-player/:/app:delegated
-      - /app/node_modules
+      - stream-player-web-player-node-modules:/app/node_modules
     container_name: web-player
 
 volumes:
   stream-player-server-postgres:
+  stream-player-web-player-node-modules:
