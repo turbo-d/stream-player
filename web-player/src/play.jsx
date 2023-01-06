@@ -1,4 +1,8 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCirclePlay } from '@fortawesome/free-solid-svg-icons'
+import { faPause } from '@fortawesome/free-solid-svg-icons'
+
 
 class Play extends React.Component {
   constructor(props) {
@@ -17,11 +21,11 @@ class Play extends React.Component {
   }
 
   render() {
-    const btnText = this.props.isPlaying ? "Pause" : "Play";
+    const btnIcon = this.props.isPlaying ? <FontAwesomeIcon icon={faPause} /> : <FontAwesomeIcon icon={faCirclePlay} />;
 
     return (
       <button disabled={this.props.disabled} onClick={this.handleClick}>
-        {btnText}
+        {btnIcon}
       </button>
     );
   }

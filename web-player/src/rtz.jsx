@@ -1,4 +1,6 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBackwardStep } from '@fortawesome/free-solid-svg-icons'
 
 // RTZ - Return to Zero
 class RTZ extends React.Component {
@@ -15,7 +17,7 @@ class RTZ extends React.Component {
   render() {
     return (
       <button disabled={this.props.disabled} onClick={this.handleClick}>
-        RTZ
+        <FontAwesomeIcon icon={faBackwardStep} />
       </button>
     );
   }
