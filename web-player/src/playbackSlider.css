@@ -41,7 +41,7 @@
     background: var(--main-color);
 }
 
-.customSlider-thumb {
+.customSlider-thumb, .customSlider-thumb-hidden {
     cursor: pointer;
     /*color for the thumb */
     background: var(--main-color);
@@ -51,6 +51,10 @@
     border-radius: 100%;
     /* remove default outline when selected */
     outline: none;
+}
+
+.customSlider-thumb-hidden {
+    display: none;
 }
 
 .customSlider-thumb:hover {

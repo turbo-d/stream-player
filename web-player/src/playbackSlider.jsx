@@ -9,7 +9,7 @@ function PlaybackSlider(props) {
         <ReactSlider
           className="customSlider"
           trackClassName="customSlider-track"
-          thumbClassName="customSlider-thumb"
+          thumbClassName={props.disabled ? "customSlider-thumb-hidden" : "customSlider-thumb"}
           min={props.min}
           max={props.max}
           value={props.value}
