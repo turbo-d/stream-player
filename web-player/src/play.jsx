@@ -1,7 +1,8 @@
+import './play.css';
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCirclePlay } from '@fortawesome/free-solid-svg-icons'
-import { faPause } from '@fortawesome/free-solid-svg-icons'
+import { faCirclePause } from '@fortawesome/free-solid-svg-icons'
 
 
 class Play extends React.Component {
@@ -21,10 +22,10 @@ class Play extends React.Component {
   }
 
   render() {
-    const btnIcon = this.props.isPlaying ? <FontAwesomeIcon icon={faPause} /> : <FontAwesomeIcon icon={faCirclePlay} />;
+    const btnIcon = this.props.isPlaying ? <FontAwesomeIcon icon={faCirclePause} /> : <FontAwesomeIcon icon={faCirclePlay} />;
 
     return (
-      <button disabled={this.props.disabled} onClick={this.handleClick}>
+      <button className="play" disabled={this.props.disabled} onClick={this.handleClick}>
         {btnIcon}
       </button>
     );

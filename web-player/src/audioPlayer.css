@@ -74,13 +74,15 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    font-size: 2em;
 }
 
 .audioPlayer__rtz {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-150%, -50%);
+    transform: translate(-200%, -50%);
+    font-size: 1.5em;
 }
 
 .audioPlayer__slider {
