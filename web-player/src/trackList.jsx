@@ -1,3 +1,4 @@
+import './trackList.css';
 import React from 'react';
 
 import Track from './track';
@@ -42,14 +43,8 @@ class TrackList extends React.Component {
     });
 
     return (
-      <div className="todoapp stack-large">
-        <h2 id="list-heading">
-          Tracks
-        </h2>
-        <ul
-          className="todo-list stack-large stack-exception"
-          aria-labelledby="list-heading"
-        >
+      <div className="trackList">
+        <ul className="trackList__list">
           {trackList}
         </ul>
       </div>

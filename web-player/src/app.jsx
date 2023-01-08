@@ -322,7 +322,13 @@ class App extends React.Component {
   render() {
     return (
       <div className="app">
-        <div className="app__header"></div>
+        <div className="app__header">
+          <div className="app__headerTracksBox">
+            <h2 className="app__headerTracks">
+              Tracks
+            </h2>
+          </div>
+        </div>
         <div className="app__body">
           <TrackList currentTrack={this.state.currentTrack} onTrackSelect={this.handleTrackSelect}/>
         </div>

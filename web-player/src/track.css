@@ -1,0 +1,51 @@
+.track {
+    float: left;
+    height: 3em;
+    width: 100%;
+    position: relative;
+    padding-left: 0.25em;
+}
+
+.track__data {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.track__titleWithIcon {
+    float: left;
+    width: 100%;
+    margin: 0.1em;
+}
+
+.track__iconContainer {
+    float: left;
+    margin-right: 0.25em;
+}
+
+.track__titleContainer {
+    float: left;
+}
+
+.track__artistContainer {
+    float: left;
+    width: 100%;
+    margin: 0.1em;
+}
+
+.track__title {
+    font-size: 1.2em;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+    display: block;
+}
+
+.track__artist {
+    font-weight: 300;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+    display: block;
+}

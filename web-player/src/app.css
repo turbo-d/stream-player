@@ -9,6 +9,19 @@
     height: 4em;
     width: 100%;
     overflow: hidden;
+    position: relative;
+}
+
+.app__headerTracksBox {
+    position: absolute;
+    top: 50%;
+    left: 0.5%;
+    transform: translateY(-50%);
+}
+
+.app__headerTracks {
+    font-size: 1.5em;
+    font-weight: 600;
 }
 
 .app__body {

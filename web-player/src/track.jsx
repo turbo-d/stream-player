@@ -1,3 +1,4 @@
+import './track.css';
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faVolumeHigh } from '@fortawesome/free-solid-svg-icons'
@@ -26,17 +27,23 @@ class Track extends React.Component {
     }
 
     return (
-      <li className="todo stack-small" onClick={this.handleClick}>
-        <div className="c-cb">
-          {loadedIcon}
-          <span className="todo-label" htmlFor="todo-0">
-            {this.props.track.title}
-          </span>
-        </div>
-        <div className="btn-group">
-          <label className="todo-label" htmlFor="todo-0">
-            {this.props.track.artist}
-          </label>
+      <li className="track" onClick={this.handleClick}>
+        <div className="track__data">
+          <div className="track__titleWithIcon">
+            <div className="track__iconContainer">
+              {loadedIcon}
+            </div>
+            <div className="track__titleContainer"> 
+              <span className="track__title">
+                {this.props.track.title}
+              </span>
+            </div>
+          </div>
+          <div className="track__artistContainer">
+            <span className="track__artist">
+              {this.props.track.artist}
+            </span>
+          </div>
         </div>
       </li>
     );
