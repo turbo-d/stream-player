@@ -13,7 +13,7 @@
     animation-timing-function: linear;
     animation-duration: 1000ms;
     animation-iteration-count: infinite;
-    background-color: black;
+    background-color: var(--main-color);
     border-radius: 15%;
     height: 20%;
     margin-top: 80%

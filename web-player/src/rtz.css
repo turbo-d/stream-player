@@ -3,4 +3,5 @@
     height: 1em;
     width: 1em;
     font-size: 1em;
+    color: var(--text-base);
 }

@@ -28,23 +28,27 @@ class Track extends React.Component {
     //}
     let loadedIcon = this.props.isLoaded ? <NowPlayingIcon isPlaying={this.props.isPlaying}/> : null;
 
+    let trackTitleClass = this.props.isLoaded ? "track__title--playing" : "track__title";
+
     return (
       <li className="track" onClick={this.handleClick}>
-        <div className="track__data">
-          <div className="track__titleWithIcon">
-            <div className="track__iconContainer">
-              {loadedIcon}
+        <div className="track__highlight">
+          <div className="track__data">
+            <div className="track__titleWithIcon">
+              <div className="track__iconContainer">
+                {loadedIcon}
+              </div>
+              <div className="track__titleContainer"> 
+                <span className={trackTitleClass}>
+                  {this.props.track.title}
+                </span>
+              </div>
             </div>
-            <div className="track__titleContainer"> 
-              <span className="track__title">
-                {this.props.track.title}
+            <div className="track__artistContainer">
+              <span className="track__artist">
+                {this.props.track.artist}
               </span>
             </div>
-          </div>
-          <div className="track__artistContainer">
-            <span className="track__artist">
-              {this.props.track.artist}
-            </span>
           </div>
         </div>
       </li>
