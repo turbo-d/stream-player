@@ -1,4 +1,7 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faVolumeHigh } from '@fortawesome/free-solid-svg-icons'
+import { faVolumeOff } from '@fortawesome/free-solid-svg-icons'
 
 class Track extends React.Component {
   constructor(props) {
@@ -13,12 +16,22 @@ class Track extends React.Component {
   }
 
   render() {
+    let loadedIcon = null;
+    if (this.props.isLoaded) {
+      if (this.props.isPlaying) {
+        loadedIcon = <span><FontAwesomeIcon icon={faVolumeHigh}/></span>;
+      } else {
+        loadedIcon = <span><FontAwesomeIcon icon={faVolumeOff}/></span>;
+      }
+    }
+
     return (
       <li className="todo stack-small" onClick={this.handleClick}>
         <div className="c-cb">
-          <label className="todo-label" htmlFor="todo-0">
+          {loadedIcon}
+          <span className="todo-label" htmlFor="todo-0">
             {this.props.track.title}
-          </label>
+          </span>
         </div>
         <div className="btn-group">
           <label className="todo-label" htmlFor="todo-0">

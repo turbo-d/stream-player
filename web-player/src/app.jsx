@@ -3,7 +3,7 @@ import React from 'react';
 import AudioPlayer from './audioPlayer';
 import TrackList from './trackList';
 
-// track: {title, artist, duration, isPlaying, seekLocation, isAudioLoaded}
+// track: {id, title, artist, duration, isPlaying, seekLocation, isAudioLoaded}
 
 const StopReason = Object.freeze({
   Undefined: "undefined",
@@ -96,6 +96,7 @@ class App extends React.Component {
     }
 
     let track = {
+      id: trackMetaData.id,
       title: trackMetaData.title,
       artist: trackMetaData.artist,
       duration: trackMetaData.duration,
@@ -323,7 +324,7 @@ class App extends React.Component {
       <div className="app">
         <div className="app__header"></div>
         <div className="app__body">
-          <TrackList onTrackSelect={this.handleTrackSelect}/>
+          <TrackList currentTrack={this.state.currentTrack} onTrackSelect={this.handleTrackSelect}/>
         </div>
         <div className="app__footer">
           <AudioPlayer

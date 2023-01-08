@@ -31,9 +31,15 @@ class TrackList extends React.Component {
   }
 
   render() {
-    const trackList = this.state.tracks?.map((track) => (
-      <Track track={track} key={track.id} onTrackSelect={this.handleTrackSelect}/>
-    ));
+    const trackList = this.state.tracks?.map((track) => {
+      let isLoaded = false;
+      let isPlaying = false;
+      if (this.props.currentTrack && this.props.currentTrack.id === track.id) {
+        isLoaded = true;
+        isPlaying = this.props.currentTrack.isPlaying;
+      }
+      return <Track track={track} key={track.id} isLoaded={isLoaded} isPlaying={isPlaying} onTrackSelect={this.handleTrackSelect}/>
+    });
 
     return (
       <div className="todoapp stack-large">
