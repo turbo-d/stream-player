@@ -20,6 +20,7 @@
 
 .track__data {
     position: absolute;
+    max-width: 100%;
     top: 50%;
     transform: translateY(-50%);
 }
@@ -28,6 +29,7 @@
     float: left;
     width: 100%;
     margin: 0.1em;
+    max-width: 100%;
 }
 
 .track__iconContainer {
@@ -37,6 +39,8 @@
 
 .track__titleContainer {
     float: left;
+    max-width: calc(100% - 1.25em);
+    overflow: hidden;
 }
 
 .track__artistContainer {
@@ -50,7 +54,7 @@
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: clip;
+    text-overflow: ellipsis;
     display: block;
     color: var(--text-base);
 }
@@ -63,7 +67,7 @@
     font-weight: 300;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: clip;
+    text-overflow: ellipsis;
     display: block;
     color: var(--text-base);
 }
