@@ -35,7 +35,7 @@ class TrackList extends React.Component {
       let isLoaded = false;
       let isPlaying = false;
       if (this.props.currentTrack && this.props.currentTrack.id === track.id) {
-        isLoaded = true;
+        isLoaded = this.props.currentTrack.isAudioLoaded;
         isPlaying = this.props.currentTrack.isPlaying;
       }
       return <Track track={track} key={track.id} isLoaded={isLoaded} isPlaying={isPlaying} onTrackSelect={this.handleTrackSelect}/>
