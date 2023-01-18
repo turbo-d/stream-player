@@ -50,6 +50,7 @@ on:
       - 'main'
     paths:
       - 'web-player/**'
+  workflow_dispatch:
 
 
 env:
