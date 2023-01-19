@@ -12,8 +12,6 @@ import (
 	"github.com/turbo-d/stream-player/server/db"
 )
 
-const audioFilesDir string = "go/src/github.com/turbo-d/stream-player/audio-files/"
-
 var trackIDKey = "trackID"
 
 func playback(router chi.Router) {
@@ -55,7 +53,12 @@ func play(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET")
 
-	filepath := audioFilesDir + track.RelLocation
+	audioFilesDir, ok := os.LookupEnv("MNT_DIR")
+	if !ok {
+		audioFilesDir = "/go/src/github.com/turbo-d/stream-player/audio-files"
+	}
+
+	filepath := audioFilesDir + "/" + track.RelLocation
 	content, err := os.ReadFile(filepath)
 	if err != nil {
 		render.Render(w, r, ErrorRenderer(err))
