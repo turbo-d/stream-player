@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,14 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # [START cloudrun_fuse_script]
-#!/bin/sh
+#!/usr/bin/env bash
 set -eo pipefail
 
 # Create mount directory for service
 #mkdir -p $MNT_DIR
 
 echo "Mounting GCS Fuse."
-#gcsfuse --debug_gcs --debug_fuse $BUCKET $MNT_DIR 
+gcsfuse --debug_gcs --debug_fuse $BUCKET $MNT_DIR 
 echo "Mounting completed."
 
 ./server &
