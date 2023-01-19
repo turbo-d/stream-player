@@ -109,7 +109,7 @@ class App extends React.Component {
     }));
 
 
-    const url = "http://localhost:8080/playback/" + trackMetaData.id;
+    const url = `/playback/${trackMetaData.id}`;
     fetch(url)
       .then((response) => {
         return response.arrayBuffer()

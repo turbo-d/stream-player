@@ -14,7 +14,7 @@ class TrackList extends React.Component {
   }
 
   componentDidMount() {
-    const url = "http://localhost:8080/tracks"
+    const url = "/tracks"
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
