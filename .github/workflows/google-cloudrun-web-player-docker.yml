@@ -119,7 +119,7 @@ jobs:
           no_traffic: true
           env_vars: |
             REACT_APP_PROXY_HOST=${{ env.REACT_APP_PROXY_HOST }}
-          flags: '--max-instances=4 -min-instances=0 --port=3000 --platform=managed'
+          flags: '--max-instances=4 --min-instances=0 --port=3000 --platform=managed'
 
       ## If required, use the Cloud Run url output in later steps
       #- name: Show Output

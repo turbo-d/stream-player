@@ -125,7 +125,7 @@ jobs:
             POSTGRES_USER=POSTGRES_USER:1
             POSTGRES_PASSWORD=POSTGRES_PASSWORD:1
             POSTGRES_DB=POSTGRES_DB:1
-          flags: '--execution-environment=gen2 --max-instances=4 -min-instances=0 --port=8080 --vpc-connector=api-connector --service-acount=fs-identity@stream-player-374604.iam.gserviceaccount.com --platform=managed'
+          flags: '--execution-environment=gen2 --max-instances=4 --min-instances=0 --port=8080 --vpc-connector=api-connector --service-account=fs-identity@stream-player-374604.iam.gserviceaccount.com --platform=managed'
 
       ## If required, use the Cloud Run url output in later steps
       #- name: Show Output
