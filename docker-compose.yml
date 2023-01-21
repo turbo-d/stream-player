@@ -22,7 +22,7 @@ services:
   server:
     build:
       context: ./server
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     env_file:
       - ./server/.env
     depends_on:
@@ -37,6 +37,8 @@ services:
       context: ./web-player
       dockerfile: Dockerfile
     env_file: ./web-player/.env
+    depends_on:
+      - server
     ports:
       - 3000:3000
     volumes:
