@@ -8,7 +8,7 @@ import (
 
 func (db Database) GetAllTracks() (*model.TrackList, error) {
 	list := &model.TrackList{}
-	rows, err := db.Conn.Query("SELECT * FROM tracks ORDER BY track_id DESC")
+	rows, err := db.Conn.Query("SELECT * FROM tracks ORDER BY track_id ASC")
 	if err != nil {
 		return list, err
 	}
