@@ -2,17 +2,9 @@ import './app.css';
 import React from 'react';
 import AudioPlayer from './audioPlayer';
 import TrackList from './trackList';
+import PlaybackEngine from './playbackEngine';
 
 // track: {id, title, artist, duration, isPlaying, seekLocation, isAudioLoaded}
-
-const StopReason = Object.freeze({
-  Undefined: "undefined",
-  End: "end",
-  Pause: "pause",
-  RTZ: "rtz",
-  Seek: "seek",
-  Switch: "switch",
-})
 
 class App extends React.Component {
   constructor(props) {
@@ -22,14 +14,7 @@ class App extends React.Component {
       currentTrack: null,
     }
 
-    this.audioCtx = null;
-    this.srcBuf = null;
-    this.srcNode = null;
-    this.cursor = 0;
-    this.timerID = null;
-    this.lastTime = 0;
-    this.stopReason = StopReason.End;
-    this.isDragging = false;
+    this.playbackEngine = null;
 
     this.handleTrackSelect = this.handleTrackSelect.bind(this);
     this.handlePlay = this.handlePlay.bind(this);
@@ -38,61 +23,46 @@ class App extends React.Component {
     this.handleOnBeforeSeek = this.handleOnBeforeSeek.bind(this);
     this.handleOnSeek = this.handleOnSeek.bind(this);
     this.handleOnAfterSeek = this.handleOnAfterSeek.bind(this);
+
+    this.onAudioLoad = this.onAudioLoad.bind(this);
+    this.onCursorChange = this.onCursorChange.bind(this);
+    this.onPlayStateChange = this.onPlayStateChange.bind(this);
   }
 
   componentDidMount() {
-    this.audioCtx = new AudioContext();
+    this.playbackEngine = new PlaybackEngine();
+    this.playbackEngine.addEventListener("onLoad", this.onAudioLoad);
+    this.playbackEngine.addEventListener("onCursorUpdate", this.onCursorChange);
+    this.playbackEngine.addEventListener("onPlayStateChange", this.onPlayStateChange);
   }
 
   componentWillUnmount() {
-    if (this.audioCtx) {
-      this.audioCtx.close();
-    }
+    this.playbackEngine.cleanup();
   }
 
-  tick() {
-    const curTime = this.audioCtx.currentTime;
-    const delta = curTime - this.lastTime;
-    this.lastTime = curTime;
-
-    this.cursor += delta;
-
-    if (!this.isDragging) {
-      let currentTrack = this.state.currentTrack;
-      currentTrack.seekLocation = Math.floor(this.cursor);
-      this.setState((state, props) => ({
-        currentTrack: currentTrack,
-      }));
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevState.currentTrack !== this.state.currentTrack) {
+      const url = `/playback/${this.state.currentTrack.id}`;
+      fetch(url)
+        .then((response) => {
+          return response.arrayBuffer()
+        })
+        .then((downloadedBuffer) => {
+          this.playbackEngine.load(downloadedBuffer);
+        })
+        .catch((e) => {
+          console.error(`Error: ${e}`);
+        });
     }
-  }
-
-  sliceAudioBuffer(buf, start) {
-    if (!buf) {
-      return null;
-    }
-
-    if (start === 0) {
-      return buf;
-    }
-
-    let srcBufSlice = new AudioBuffer({
-      length: buf.length - start,
-      numberOfChannels: buf.numberOfChannels,
-      sampleRate: buf.sampleRate,
-    });
-
-    for (let chan = 0; chan < buf.numberOfChannels; chan++) {
-      let chanData = buf.getChannelData(chan);
-      let chanDataSubarray = chanData.subarray(start, chanData.length);
-      srcBufSlice.copyToChannel(chanDataSubarray, chan);
-    }
-
-    return srcBufSlice;
   }
 
   handleTrackSelect(trackMetaData) {
     if (this.state.currentTrack) {
-      this.handleTrackSwitch();
+      if (trackMetaData.id === this.state.currentTrack.id) {
+        this.playbackEngine.seek(0);
+        return;
+      }
+
     }
 
     let track = {
@@ -107,179 +77,22 @@ class App extends React.Component {
     this.setState((state, props) => ({
       currentTrack: track,
     }));
-
-
-    const url = `/playback/${trackMetaData.id}`;
-    fetch(url)
-      .then((response) => {
-        return response.arrayBuffer()
-      })
-      .then((downloadedBuffer) => {
-        return this.audioCtx.decodeAudioData(downloadedBuffer)
-      })
-      .then((decodedBuffer) => {
-        this.srcBuf = decodedBuffer;
-        let currentTrack = this.state.currentTrack;
-        currentTrack.isAudioLoaded = true;
-        this.setState((state, props) => ({
-          currentTrack: currentTrack,
-        }));
-        this.handlePlay();
-      })
-      .catch((e) => {
-        console.error(`Error: ${e}`);
-      });
   }
 
   handlePlay() {
-    if (this.audioCtx.state === "suspended") {
-      this.audioCtx.resume().then(() => {
-        this.handlePlay();
-      });
-      return;
-    }
-
-    let sampleFrame = Math.floor(this.cursor * this.audioCtx.sampleRate);
-    let buf = this.sliceAudioBuffer(this.srcBuf, sampleFrame);
-
-    // Set up the AudioBufferSourceNode
-    this.srcNode = new AudioBufferSourceNode(this.audioCtx, {
-      buffer: buf,
-    });
-
-    // Connect the nodes together
-    this.srcNode.connect(this.audioCtx.destination);
-
-    this.srcNode.addEventListener(
-      "ended",
-      () => {
-        this.srcNode = null;
-
-        switch (this.stopReason) {
-          case StopReason.End:
-            clearInterval(this.timerID);
-            this.cursor = 0;
-            let currentTrack = this.state.currentTrack;
-            currentTrack.isPlaying = false;
-            this.setState((state, props) => ({
-              currentTrack: currentTrack,
-            }));
-            if (!this.isDragging) {
-              let currentTrack = this.state.currentTrack;
-              currentTrack.seekLocation = Math.floor(this.cursor);
-              this.setState((state, props) => ({
-                currentTrack: currentTrack,
-              }));
-            }
-            break;
-          case StopReason.Pause:
-          case StopReason.Switch:
-            break;
-          case StopReason.RTZ:
-            this.handlePlay();
-            break;
-          case StopReason.Seek:
-            this.handlePlay();
-            break;
-          default:
-            console.error("Unknown StopReason");
-        }
-
-        this.stopReason = StopReason.End;
-      },
-      false
-    )
-
-    if (this.srcNode) {
-      this.srcNode.start(0);
-      this.lastTime = this.audioCtx.currentTime;
-      let currentTrack = this.state.currentTrack;
-      currentTrack.isPlaying = true;
-      this.setState((state, props) => ({
-        currentTrack: currentTrack,
-      }));
-      this.timerID = setInterval(
-        () => this.tick(),
-        100
-      );
-    }
+    this.playbackEngine.play();
   }
 
   handlePause() {
-    if (!this.state.currentTrack.isPlaying) {
-      return;
-    }
-
-    if (this.srcNode) {
-      clearInterval(this.timerID);
-
-      let currentTrack = this.state.currentTrack;
-      currentTrack.isPlaying = false;
-      this.setState((state, props) => ({
-        currentTrack: currentTrack,
-      }));
-
-      this.stopReason = StopReason.Pause;
-      this.srcNode.stop(0);
-    }
+    this.playbackEngine.pause();
   }
 
   handleRTZ() {
-    if (!this.state.currentTrack.isPlaying) {
-      this.cursor = 0;
-      let currentTrack = this.state.currentTrack;
-      currentTrack.seekLocation = Math.floor(this.cursor);
-      this.setState((state, props) => ({
-        currentTrack: currentTrack,
-      }));
-
-      return;
-    }
-
-    if (this.srcNode) {
-      clearInterval(this.timerID);
-
-      this.cursor = 0;
-      let currentTrack = this.state.currentTrack;
-      currentTrack.seekLocation = Math.floor(this.cursor);
-      this.setState((state, props) => ({
-        currentTrack: currentTrack,
-      }));
-
-      this.stopReason = StopReason.RTZ;
-      this.srcNode.stop(0);
-    }
-  }
-
-  handleTrackSwitch() {
-    if (!this.state.currentTrack.isPlaying) {
-      this.cursor = 0;
-      let currentTrack = this.state.currentTrack;
-      currentTrack.seekLocation = Math.floor(this.cursor);
-      this.setState((state, props) => ({
-        currentTrack: currentTrack,
-      }));
-
-      return;
-    }
-
-    if (this.srcNode) {
-      clearInterval(this.timerID);
-
-      this.cursor = 0;
-      let currentTrack = this.state.currentTrack;
-      currentTrack.seekLocation = Math.floor(this.cursor);
-      this.setState((state, props) => ({
-        currentTrack: currentTrack,
-      }));
-
-      this.stopReason = StopReason.Switch;
-      this.srcNode.stop(0);
-    }
+    this.playbackEngine.returnToZero();
   }
 
   handleOnBeforeSeek(value, thumbIndex) {
-    this.isDragging = true;
+    this.playbackEngine.removeEventListener("onCursorUpdate", this.onCursorChange);
   }
 
   handleOnSeek(value, thumbIndex) {
@@ -291,32 +104,35 @@ class App extends React.Component {
   }
 
   handleOnAfterSeek(value, thumbIndex) {
-    this.isDragging = false;
+    this.playbackEngine.addEventListener("onCursorUpdate", this.onCursorChange);
 
-    if (!this.state.currentTrack.isPlaying) {
-      this.cursor = value;
-      let currentTrack = this.state.currentTrack;
-      currentTrack.seekLocation = Math.floor(this.cursor);
-      this.setState((state, props) => ({
-        currentTrack: currentTrack,
-      }));
+    this.playbackEngine.seek(value);
+  }
 
-      return;
-    }
+  onCursorChange(eventData) {
+    let currentTrack = this.state.currentTrack;
+    currentTrack.seekLocation = Math.floor(eventData.value);
+    this.setState((state, props) => ({
+      currentTrack: currentTrack,
+    }));
+  }
 
-    if (this.srcNode) {
-      clearInterval(this.timerID);
+  onPlayStateChange(eventData) {
+    let currentTrack = this.state.currentTrack;
+    currentTrack.isPlaying = eventData.isPlaying;
+    this.setState((state, props) => ({
+      currentTrack: currentTrack,
+    }));
+  }
 
-      this.cursor = value;
-      let currentTrack = this.state.currentTrack;
-      currentTrack.seekLocation = Math.floor(this.cursor);
-      this.setState((state, props) => ({
-        currentTrack: currentTrack,
-      }));
-
-      this.stopReason = StopReason.Seek;
-      this.srcNode.stop(0);
-    }
+  onAudioLoad() {
+    console.log("onAudioLoad");
+    let currentTrack = this.state.currentTrack;
+    currentTrack.isAudioLoaded = true;
+    this.setState((state, props) => ({
+      currentTrack: currentTrack,
+    }));
+    this.playbackEngine.play();
   }
 
   render() {

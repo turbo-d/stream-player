@@ -46,31 +46,16 @@ class AudioPlayer extends React.Component {
   }
 
   render() {
-    let seekLocation = 0;
-    let maxSlider = 100;
-
-    let timeElapsed = "-:--";
-    let duration = "-:--";
-
-    let trackTitle = "";
-    let trackArtist = "";
-
-    let disableTransport = true;
-    let isPlaying = false;
-
-    if (this.props.track) {
-      trackTitle = this.props.track.title;
-      trackArtist = this.props.track.artist;
-
-      seekLocation = this.props.track.seekLocation;
-      maxSlider = Math.floor(this.props.track.duration);
-
-      timeElapsed = new Date(1000 * (seekLocation)).toISOString().substring(15, 19);
-      duration = new Date(1000 * (Math.ceil(this.props.track.duration))).toISOString().substring(15, 19);
-
-      disableTransport = !this.props.track.isAudioLoaded;
-      isPlaying = this.props.track.isPlaying;
+    if (!this.props.track) {
+      return null;
     }
+
+    const disableTransport = !this.props.track.isAudioLoaded;
+
+    const seekLocation = this.props.track.seekLocation;
+    const maxSlider = Math.floor(this.props.track.duration);
+    const timeElapsed = new Date(1000 * (seekLocation)).toISOString().substring(15, 19);
+    const duration = new Date(1000 * (Math.ceil(this.props.track.duration))).toISOString().substring(15, 19);
 
     return (
       <div className="audioPlayer">
@@ -78,10 +63,10 @@ class AudioPlayer extends React.Component {
           <div className="audioPlayer__trackDataOuter">
             <div className="audioPlayer__trackDataInner">
               <div className="audioPlayer__trackDataTitle">
-                <TrackTitle title={trackTitle}/>
+                <TrackTitle title={this.props.track.title}/>
               </div>
               <div className="audioPlayer__trackDataArtist">
-                <TrackArtist artist={trackArtist}/>
+                <TrackArtist artist={this.props.track.artist}/>
               </div>
             </div>
             <div className="audioPlayer__trackDataGradient"/>
@@ -93,7 +78,7 @@ class AudioPlayer extends React.Component {
               <RTZ disabled={disableTransport} onRTZ={this.handleRTZ} />
             </div>
             <div className="audioPlayer__play">
-              <Play disabled={disableTransport} onPlay={this.handlePlay} onPause={this.handlePause} isPlaying={isPlaying} />
+              <Play disabled={disableTransport} onPlay={this.handlePlay} onPause={this.handlePause} isPlaying={this.props.track.isPlaying} />
             </div>
           </div>
           <div className="audioPlayer__transportBottom">
