@@ -1,0 +1,41 @@
+.trackData {
+    float: left;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+.trackData__outer {
+    float: left;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+.trackData__inner {
+    position: absolute;
+    top: 50%;
+    max-width: 100%;
+    transform: translateY(-50%);
+    padding: 0.25em;
+}
+
+.trackData__title {
+    float: left;
+    width: 100%;
+    margin: 0.1em;
+}
+
+.trackData__artist {
+    float: left;
+    width: 100%;
+    margin: 0.1em;
+}
+
+.trackData__gradient {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    width: 20%;
+    background: linear-gradient(to left, rgba(36, 36, 36, 1), rgba(36, 36, 36, 0));
+}

@@ -13,41 +13,6 @@
     width: 25%;
 }
 
-.audioPlayer__trackDataOuter {
-    float: left;
-    height: 100%;
-    width: 100%;
-    position: relative;
-}
-
-.audioPlayer__trackDataGradient {
-    position: absolute;
-    right: 0;
-    height: 100%;
-    width: 20%;
-    background: linear-gradient(to left, rgba(36, 36, 36, 1), rgba(36, 36, 36, 0));
-}
-
-.audioPlayer__trackDataInner {
-    position: absolute;
-    top: 50%;
-    max-width: 100%;
-    transform: translateY(-50%);
-    padding: 0.25em;
-}
-
-.audioPlayer__trackDataTitle {
-    float: left;
-    width: 100%;
-    margin: 0.1em;
-}
-
-.audioPlayer__trackDataArtist {
-    float: left;
-    width: 100%;
-    margin: 0.1em;
-}
-
 .audioPlayer__transport {
     float: left;
     height: 100%;

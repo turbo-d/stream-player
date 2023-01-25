@@ -1,8 +1,7 @@
 import './audioPlayer.css';
 import PlaybackEngine from './playbackEngine';
 import React from 'react';
-import TrackArtist from './trackArtist';
-import TrackTitle from './trackTitle';
+import TrackData from './trackData';
 import TransportControl from './transportControl';
 
 class AudioPlayer extends React.Component {
@@ -111,17 +110,7 @@ class AudioPlayer extends React.Component {
     return (
       <div className="audioPlayer">
         <div className="audioPlayer__trackData">
-          <div className="audioPlayer__trackDataOuter">
-            <div className="audioPlayer__trackDataInner">
-              <div className="audioPlayer__trackDataTitle">
-                <TrackTitle title={this.props.track.title}/>
-              </div>
-              <div className="audioPlayer__trackDataArtist">
-                <TrackArtist artist={this.props.track.artist}/>
-              </div>
-            </div>
-            <div className="audioPlayer__trackDataGradient"/>
-          </div>
+          <TrackData track={this.props.track}/>
         </div>
         <div className="audioPlayer__transport">
           <TransportControl
