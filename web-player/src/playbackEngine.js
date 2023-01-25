@@ -1,8 +1,12 @@
 const PlaybackEngineEvent = Object.freeze({
   Undefined: "undefined",
-  OnLoad: "onLoad",
+  OnLoadStart: "onLoadStart",
+  OnLoadEnd: "onLoadEnd",
+  OnLoadAlert: "onLoadAlert",
+  OnLoadFail: "onLoadFail",
+  OnPlaybackStart: "onPlaybackStart",
+  OnPlaybackStop: "onPlaybackStop",
   OnCursorUpdate: "onCursorUpdate",
-  OnPlayStateChange: "onPlayStateChange",
 });
 
 const StopReason = Object.freeze({
@@ -26,12 +30,8 @@ class PlaybackEngine extends EventTarget{
     this.lastTime = 0;
     this.isPlaying = false;
     this.stopReason = StopReason.End;
-
+    this.loadAlertTimeoutTimerID = null;
     this.eventListeners = {};
-
-    this.state = {
-      isAudioLoaded: false,
-    }
   }
 
   //addEventListener(type, listener, options) {
@@ -79,7 +79,7 @@ class PlaybackEngine extends EventTarget{
     }
   }
 
-  load(audio /*ArrayBuffer*/) {
+  load(url /*String*/, alertTimeoutMS /*number*/) {
     if (!this.audioCtx) {
       this.audioCtx = new AudioContext();
     }
@@ -88,14 +88,31 @@ class PlaybackEngine extends EventTarget{
       this.#switchTrack();
     }
 
-    this.audioCtx.decodeAudioData(audio)
+    this.dispatchEvent(PlaybackEngineEvent.OnLoadStart, {});
+
+    this.loadingAlertTimeoutID = setTimeout(
+      () => {
+        this.dispatchEvent(PlaybackEngineEvent.OnLoadAlert, {});
+      },
+      alertTimeoutMS
+    );
+
+    fetch(url)
+      .then((response) => {
+        return response.arrayBuffer()
+      })
+      .then((downloadedBuffer) => {
+        return this.audioCtx.decodeAudioData(downloadedBuffer)
+      })
       .then((decodedBuffer) => {
         this.srcBuf = decodedBuffer;
-        //this.play();
-        this.dispatchEvent(PlaybackEngineEvent.OnLoad, {})
+
+        clearTimeout(this.loadingAlertTimeoutID);
+        this.dispatchEvent(PlaybackEngineEvent.OnLoadEnd, {});
       })
       .catch((e) => {
         console.error(`Error: ${e}`);
+        this.dispatchEvent(PlaybackEngineEvent.OnLoadFail, {});
       });
   }
 
@@ -230,7 +247,11 @@ class PlaybackEngine extends EventTarget{
 
   #setPlayState(isPlaying) {
     this.isPlaying = isPlaying;
-    this.dispatchEvent(PlaybackEngineEvent.OnPlayStateChange, {isPlaying: isPlaying});
+    if (isPlaying) {
+      this.dispatchEvent(PlaybackEngineEvent.OnPlaybackStart, {});
+    } else {
+      this.dispatchEvent(PlaybackEngineEvent.OnPlaybackStop, {});
+    }
   }
 
   #sliceAudioBuffer(buf, start) {

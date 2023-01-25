@@ -20,16 +20,24 @@ class AudioPlayer extends React.Component {
     this.onBeforeSeek = this.onBeforeSeek.bind(this);
     this.onSeek = this.onSeek.bind(this);
     this.onAfterSeek = this.onAfterSeek.bind(this);
-    this.onAudioLoad = this.onAudioLoad.bind(this);
-    this.onCursorChange = this.onCursorChange.bind(this);
-    this.onPlayStateChange = this.onPlayStateChange.bind(this);
+    this.onLoadStart = this.onLoadStart.bind(this);
+    this.onLoadEnd = this.onLoadEnd.bind(this);
+    this.onLoadAlert = this.onLoadAlert.bind(this);
+    this.onLoadFail = this.onLoadFail.bind(this);
+    this.onCursorUpdate = this.onCursorUpdate.bind(this);
+    this.onPlaybackStart = this.onPlaybackStart.bind(this);
+    this.onPlaybackStop = this.onPlaybackStop.bind(this);
   }
 
   componentDidMount() {
     this.playbackEngine = new PlaybackEngine();
-    this.playbackEngine.addEventListener("onLoad", this.onAudioLoad);
-    this.playbackEngine.addEventListener("onCursorUpdate", this.onCursorChange);
-    this.playbackEngine.addEventListener("onPlayStateChange", this.onPlayStateChange);
+    this.playbackEngine.addEventListener("onLoadStart", this.onLoadStart);
+    this.playbackEngine.addEventListener("onLoadEnd", this.onLoadEnd);
+    this.playbackEngine.addEventListener("onLoadAlert", this.onLoadAlert);
+    this.playbackEngine.addEventListener("onLoadFail", this.onLoadFail);
+    this.playbackEngine.addEventListener("onPlaybackStart", this.onPlaybackStart);
+    this.playbackEngine.addEventListener("onPlaybackStop", this.onPlaybackStop);
+    this.playbackEngine.addEventListener("onCursorUpdate", this.onCursorUpdate);
   }
 
   componentWillUnmount() {
@@ -37,19 +45,10 @@ class AudioPlayer extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if ((!prevProps.track && this.props.track) || (prevProps.track && (prevProps.track.id !== this.props.track.id))) {
-      this.props.onLoadStart();
+    if ((!prevProps.track && this.props.track) ||
+        (prevProps.track && (prevProps.track.id !== this.props.track.id))) {
       const url = `/playback/${this.props.track.id}`;
-      fetch(url)
-        .then((response) => {
-          return response.arrayBuffer()
-        })
-        .then((downloadedBuffer) => {
-          this.playbackEngine.load(downloadedBuffer);
-        })
-        .catch((e) => {
-          console.error(`Error: ${e}`);
-        });
+      this.playbackEngine.load(url, this.props.loadAlertTimeoutMS);
     }
   }
 
@@ -66,7 +65,7 @@ class AudioPlayer extends React.Component {
   }
 
   onBeforeSeek(value, thumbIndex) {
-    this.playbackEngine.removeEventListener("onCursorUpdate", this.onCursorChange);
+    this.playbackEngine.removeEventListener("onCursorUpdate", this.onCursorUpdate);
   }
 
   onSeek(value, thumbIndex) {
@@ -76,28 +75,40 @@ class AudioPlayer extends React.Component {
   }
 
   onAfterSeek(value, thumbIndex) {
-    this.playbackEngine.addEventListener("onCursorUpdate", this.onCursorChange);
+    this.playbackEngine.addEventListener("onCursorUpdate", this.onCursorUpdate);
 
     this.playbackEngine.seek(value);
   }
 
-  onCursorChange(eventData) {
+  onLoadStart() {
+    this.props.onLoadStart();
+  }
+
+  onLoadEnd() {
+    this.props.onLoadEnd();
+    this.playbackEngine.play();
+  }
+
+  onLoadAlert() {
+    this.props.onLoadAlert();
+  }
+
+  onLoadFail() {
+    this.props.onLoadFail();
+  }
+
+  onPlaybackStart() {
+    this.props.onPlaybackStart();
+  }
+
+  onPlaybackStop() {
+    this.props.onPlaybackStop();
+  }
+
+  onCursorUpdate(eventData) {
     this.setState((state, props) => ({
       seekLocation: Math.floor(eventData.value),
     }));
-  }
-
-  onPlayStateChange(eventData) {
-    if (eventData.isPlaying) {
-      this.props.onPlay();
-    } else {
-      this.props.onPause();
-    }
-  }
-
-  onAudioLoad() {
-    this.props.onLoadEnd();
-    this.playbackEngine.play();
   }
 
   render() {

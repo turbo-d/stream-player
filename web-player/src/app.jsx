@@ -10,16 +10,16 @@ class App extends React.Component {
     this.state = {
       // track: {id, title, artist, duration, isPlaying, isLoaded}
       track: null,
-      displayLoadingAlert: false,
+      showLoadAlert: false,
+      showErrorDialog: false,
     }
 
-    this.loadingAlertTimeoutID = null;
-
     this.onTrackSelect = this.onTrackSelect.bind(this);
-    this.onPlay = this.onPlay.bind(this);
-    this.onPause = this.onPause.bind(this);
+    this.onPlaybackStart = this.onPlaybackStart.bind(this);
+    this.onPlaybackStop = this.onPlaybackStop.bind(this);
     this.onLoadStart = this.onLoadStart.bind(this);
     this.onLoadEnd = this.onLoadEnd.bind(this);
+    this.onLoadAlert = this.onLoadAlert.bind(this);
   }
 
   onTrackSelect(selectedTrack) {
@@ -41,7 +41,7 @@ class App extends React.Component {
     }));
   }
 
-  onPlay() {
+  onPlaybackStart() {
     let track = this.state.track;
     track.isPlaying = true;
     this.setState((state, props) => ({
@@ -49,7 +49,7 @@ class App extends React.Component {
     }));
   }
 
-  onPause() {
+  onPlaybackStop() {
     let track = this.state.track;
     track.isPlaying = false;
     this.setState((state, props) => ({
@@ -58,14 +58,6 @@ class App extends React.Component {
   }
 
   onLoadStart() {
-    this.loadingAlertTimeoutID = setTimeout(
-      () => {
-        this.setState((state, props) => ({
-          displayLoadingAlert: true,
-        }));
-      },
-      500
-    );
   }
 
   onLoadEnd() {
@@ -73,14 +65,28 @@ class App extends React.Component {
     track.isLoaded = true;
     this.setState((state, props) => ({
       track: track,
-      displayLoadingAlert: false,
+      showLoadAlert: false,
     }));
+  }
 
-    clearTimeout(this.loadingAlertTimeoutID);
+  onLoadAlert() {
+    this.setState((state, props) => ({
+      showLoadAlert: true,
+    }));
+  }
+
+  onLoadFail() {
+    this.setState((state, props) => ({
+      showErrorDialog: true,
+    }));
   }
 
   render() {
-    let headerText = this.state.displayLoadingAlert? "Tracks -- LOADING" : "Tracks";
+    let headerText = this.state.showLoadAlert? "Tracks -- LOADING" : "Tracks";
+    if (this.state.showErrorDialog) {
+      headerText = "Tracks -- ERROR";
+    }
+
     return (
       <div className="app">
         <div className="app__header">
@@ -99,10 +105,13 @@ class App extends React.Component {
         <div className="app__footer">
           <AudioPlayer
             track={this.state.track}
-            onPlay={this.onPlay}
-            onPause={this.onPause}
+            loadAlertTimeoutMS={500}
+            onPlaybackStart={this.onPlaybackStart}
+            onPlaybackStop={this.onPlaybackStop}
             onLoadStart={this.onLoadStart}
             onLoadEnd={this.onLoadEnd}
+            onLoadAlert={this.onLoadAlert}
+            onLoadFail={this.onLoadFail}
           />
         </div>
       </div>
