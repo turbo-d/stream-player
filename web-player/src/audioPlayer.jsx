@@ -2,6 +2,8 @@ import './audioPlayer.css';
 
 import React from 'react';
 
+import PlaybackEngine from './playbackEngine';
+
 import Play from './play';
 import PlaybackSlider from './playbackSlider';
 import PlaybackTime from './playbackTime';
@@ -13,36 +15,93 @@ class AudioPlayer extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      seekLocation: 0,
+    }
+
+    this.playbackEngine = null;
+
     this.handlePlay = this.handlePlay.bind(this);
     this.handlePause = this.handlePause.bind(this);
     this.handleRTZ = this.handleRTZ.bind(this);
-    this.handlePlaybackSliderBeforeChange = this.handlePlaybackSliderBeforeChange.bind(this);
-    this.handlePlaybackSliderChange = this.handlePlaybackSliderChange.bind(this);
-    this.handlePlaybackSliderAfterChange = this.handlePlaybackSliderAfterChange.bind(this);
+    this.handleOnBeforeSeek = this.handleOnBeforeSeek.bind(this);
+    this.handleOnSeek = this.handleOnSeek.bind(this);
+    this.handleOnAfterSeek = this.handleOnAfterSeek.bind(this);
+
+    this.onAudioLoad = this.onAudioLoad.bind(this);
+    this.onCursorChange = this.onCursorChange.bind(this);
+    this.onPlayStateChange = this.onPlayStateChange.bind(this);
+  }
+
+  componentDidMount() {
+    this.playbackEngine = new PlaybackEngine();
+    this.playbackEngine.addEventListener("onLoad", this.onAudioLoad);
+    this.playbackEngine.addEventListener("onCursorUpdate", this.onCursorChange);
+    this.playbackEngine.addEventListener("onPlayStateChange", this.onPlayStateChange);
+  }
+
+  componentWillUnmount() {
+    this.playbackEngine.cleanup();
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if ((!prevProps.track && this.props.track) || (prevProps.track && (prevProps.track.id !== this.props.track.id))) {
+      console.log("Load");
+      const url = `/playback/${this.props.track.id}`;
+      fetch(url)
+        .then((response) => {
+          return response.arrayBuffer()
+        })
+        .then((downloadedBuffer) => {
+          this.playbackEngine.load(downloadedBuffer);
+        })
+        .catch((e) => {
+          console.error(`Error: ${e}`);
+        });
+    }
   }
 
   handlePlay() {
-    this.props.onPlay();
+    this.playbackEngine.play();
   }
 
   handlePause() {
-    this.props.onPause();
+    this.playbackEngine.pause();
   }
 
   handleRTZ() {
-    this.props.onRTZ();
+    this.playbackEngine.returnToZero();
   }
 
-  handlePlaybackSliderBeforeChange(value, thumbIndex) {
-    this.props.onBeforeSeek(value, thumbIndex);
+  handleOnBeforeSeek(value, thumbIndex) {
+    this.playbackEngine.removeEventListener("onCursorUpdate", this.onCursorChange);
   }
 
-  handlePlaybackSliderChange(value, thumbIndex) {
-    this.props.onSeek(value, thumbIndex);
+  handleOnSeek(value, thumbIndex) {
+    this.setState((state, props) => ({
+      seekLocation: value,
+    }));
   }
 
-  handlePlaybackSliderAfterChange(value, thumbIndex) {
-    this.props.onAfterSeek(value, thumbIndex);
+  handleOnAfterSeek(value, thumbIndex) {
+    this.playbackEngine.addEventListener("onCursorUpdate", this.onCursorChange);
+
+    this.playbackEngine.seek(value);
+  }
+
+  onCursorChange(eventData) {
+    this.setState((state, props) => ({
+      seekLocation: Math.floor(eventData.value),
+    }));
+  }
+
+  onPlayStateChange(eventData) {
+    this.props.onPlayStateChange(eventData.isPlaying);
+  }
+
+  onAudioLoad() {
+    this.props.onAudioLoad();
+    this.playbackEngine.play();
   }
 
   render() {
@@ -52,7 +111,7 @@ class AudioPlayer extends React.Component {
 
     const disableTransport = !this.props.track.isAudioLoaded;
 
-    const seekLocation = this.props.track.seekLocation;
+    const seekLocation = this.state.seekLocation;
     const maxSlider = Math.floor(this.props.track.duration);
     const timeElapsed = new Date(1000 * (seekLocation)).toISOString().substring(15, 19);
     const duration = new Date(1000 * (Math.ceil(this.props.track.duration))).toISOString().substring(15, 19);
@@ -91,9 +150,9 @@ class AudioPlayer extends React.Component {
                 max={maxSlider}
                 value={seekLocation}
                 disabled={disableTransport}
-                onBeforeChange={this.handlePlaybackSliderBeforeChange}
-                onChange={this.handlePlaybackSliderChange}
-                onAfterChange={this.handlePlaybackSliderAfterChange}
+                onBeforeChange={this.handleOnBeforeSeek}
+                onChange={this.handleOnSeek}
+                onAfterChange={this.handleOnAfterSeek}
               />
             </div>
             <div className="audioPlayer__playbackTime--right">

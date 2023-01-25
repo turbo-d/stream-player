@@ -84,7 +84,6 @@ class PlaybackEngine extends EventTarget{
   }
 
   load(audio /*ArrayBuffer*/) {
-    console.log("PE load()");
     if (!this.audioCtx) {
       this.audioCtx = new AudioContext();
     }
