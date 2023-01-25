@@ -1,15 +1,9 @@
 import './audioPlayer.css';
-
-import React from 'react';
-
 import PlaybackEngine from './playbackEngine';
-
-import Play from './play';
-import PlaybackSlider from './playbackSlider';
-import PlaybackTime from './playbackTime';
-import RTZ from './rtz';
+import React from 'react';
 import TrackArtist from './trackArtist';
 import TrackTitle from './trackTitle';
+import TransportControl from './transportControl';
 
 class AudioPlayer extends React.Component {
   constructor(props) {
@@ -21,13 +15,12 @@ class AudioPlayer extends React.Component {
 
     this.playbackEngine = null;
 
-    this.handlePlay = this.handlePlay.bind(this);
-    this.handlePause = this.handlePause.bind(this);
-    this.handleRTZ = this.handleRTZ.bind(this);
-    this.handleOnBeforeSeek = this.handleOnBeforeSeek.bind(this);
-    this.handleOnSeek = this.handleOnSeek.bind(this);
-    this.handleOnAfterSeek = this.handleOnAfterSeek.bind(this);
-
+    this.onPlay = this.onPlay.bind(this);
+    this.onPause = this.onPause.bind(this);
+    this.onRTZ = this.onRTZ.bind(this);
+    this.onBeforeSeek = this.onBeforeSeek.bind(this);
+    this.onSeek = this.onSeek.bind(this);
+    this.onAfterSeek = this.onAfterSeek.bind(this);
     this.onAudioLoad = this.onAudioLoad.bind(this);
     this.onCursorChange = this.onCursorChange.bind(this);
     this.onPlayStateChange = this.onPlayStateChange.bind(this);
@@ -61,29 +54,29 @@ class AudioPlayer extends React.Component {
     }
   }
 
-  handlePlay() {
+  onPlay() {
     this.playbackEngine.play();
   }
 
-  handlePause() {
+  onPause() {
     this.playbackEngine.pause();
   }
 
-  handleRTZ() {
+  onRTZ() {
     this.playbackEngine.returnToZero();
   }
 
-  handleOnBeforeSeek(value, thumbIndex) {
+  onBeforeSeek(value, thumbIndex) {
     this.playbackEngine.removeEventListener("onCursorUpdate", this.onCursorChange);
   }
 
-  handleOnSeek(value, thumbIndex) {
+  onSeek(value, thumbIndex) {
     this.setState((state, props) => ({
       seekLocation: value,
     }));
   }
 
-  handleOnAfterSeek(value, thumbIndex) {
+  onAfterSeek(value, thumbIndex) {
     this.playbackEngine.addEventListener("onCursorUpdate", this.onCursorChange);
 
     this.playbackEngine.seek(value);
@@ -115,11 +108,6 @@ class AudioPlayer extends React.Component {
 
     const disableTransport = !this.props.track.isLoaded;
 
-    const seekLocation = this.state.seekLocation;
-    const maxSlider = Math.floor(this.props.track.duration);
-    const timeElapsed = new Date(1000 * (seekLocation)).toISOString().substring(15, 19);
-    const duration = new Date(1000 * (Math.ceil(this.props.track.duration))).toISOString().substring(15, 19);
-
     return (
       <div className="audioPlayer">
         <div className="audioPlayer__trackData">
@@ -136,33 +124,17 @@ class AudioPlayer extends React.Component {
           </div>
         </div>
         <div className="audioPlayer__transport">
-          <div className="audioPlayer__transportTop">
-            <div className="audioPlayer__rtz">
-              <RTZ disabled={disableTransport} onRTZ={this.handleRTZ} />
-            </div>
-            <div className="audioPlayer__play">
-              <Play disabled={disableTransport} onPlay={this.handlePlay} onPause={this.handlePause} isPlaying={this.props.track.isPlaying} />
-            </div>
-          </div>
-          <div className="audioPlayer__transportBottom">
-            <div className="audioPlayer__playbackTime--left">
-              <PlaybackTime playbackTime={timeElapsed} />
-            </div>
-            <div className="audioPlayer__slider">
-              <PlaybackSlider
-                min={0}
-                max={maxSlider}
-                value={seekLocation}
-                disabled={disableTransport}
-                onBeforeChange={this.handleOnBeforeSeek}
-                onChange={this.handleOnSeek}
-                onAfterChange={this.handleOnAfterSeek}
-              />
-            </div>
-            <div className="audioPlayer__playbackTime--right">
-              <PlaybackTime playbackTime={duration} />
-            </div>
-          </div>
+          <TransportControl
+            disabled={disableTransport}
+            track={this.props.track}
+            seekLocation={this.state.seekLocation}
+            onPlay={this.onPlay}
+            onPause={this.onPause}
+            onRTZ={this.onRTZ}
+            onBeforeSeek={this.onBeforeSeek}
+            onSeek={this.onSeek}
+            onAfterSeek={this.onAfterSeek}
+          />
         </div>
       </div>
     );
