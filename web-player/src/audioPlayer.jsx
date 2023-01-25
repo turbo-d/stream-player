@@ -115,7 +115,8 @@ class AudioPlayer extends React.Component {
         <div className="audioPlayer__transport">
           <TransportControl
             disabled={disableTransport}
-            track={this.props.track}
+            duration={this.props.track.duration}
+            isPlaying={this.props.track.isPlaying}
             seekLocation={this.state.seekLocation}
             onPlay={this.onPlay}
             onPause={this.onPause}

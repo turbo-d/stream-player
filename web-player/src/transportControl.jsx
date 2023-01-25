@@ -43,9 +43,9 @@ class TransportControl extends React.Component {
 
   render() {
     const seekLocation = this.props.seekLocation;
-    const maxSlider = Math.floor(this.props.track.duration);
+    const maxSlider = Math.floor(this.props.duration);
     const timeElapsed = new Date(1000 * (seekLocation)).toISOString().substring(15, 19);
-    const duration = new Date(1000 * (Math.ceil(this.props.track.duration))).toISOString().substring(15, 19);
+    const duration = new Date(1000 * (Math.ceil(this.props.duration))).toISOString().substring(15, 19);
 
     return (
       <div className="transportControl">
@@ -59,7 +59,7 @@ class TransportControl extends React.Component {
           <div className="transportControl__play">
             <Play
               disabled={this.props.disabled}
-              isPlaying={this.props.track.isPlaying}
+              isPlaying={this.props.isPlaying}
               onPlay={this.onPlay}
               onPause={this.onPause}
             />
