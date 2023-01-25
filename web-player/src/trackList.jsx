@@ -1,6 +1,5 @@
 import './trackList.css';
 import React from 'react';
-
 import Track from './track';
 
 class TrackList extends React.Component {
@@ -10,7 +9,7 @@ class TrackList extends React.Component {
       tracks: []
     }
 
-    this.handleTrackSelect = this.handleTrackSelect.bind(this);
+    this.onTrackSelect = this.onTrackSelect.bind(this);
   }
 
   componentDidMount() {
@@ -27,7 +26,7 @@ class TrackList extends React.Component {
       });
   }
 
-  handleTrackSelect(track) {
+  onTrackSelect(track) {
     this.props.onTrackSelect(track);
   }
 
@@ -36,10 +35,16 @@ class TrackList extends React.Component {
       let isLoaded = false;
       let isPlaying = false;
       if (this.props.selectedTrack && this.props.selectedTrack.id === track.id) {
-        isLoaded = this.props.selectedTrack.isAudioLoaded;
+        isLoaded = this.props.selectedTrack.isLoaded;
         isPlaying = this.props.selectedTrack.isPlaying;
       }
-      return <Track track={track} key={track.id} isLoaded={isLoaded} isPlaying={isPlaying} onTrackSelect={this.handleTrackSelect}/>
+      return <Track
+                track={track}
+                key={track.id}
+                isLoaded={isLoaded}
+                isPlaying={isPlaying}
+                onTrackSelect={this.onTrackSelect}
+              />
     });
 
     return (

@@ -1,6 +1,6 @@
 import './app.css';
-import React from 'react';
 import AudioPlayer from './audioPlayer';
+import React from 'react';
 import TrackList from './trackList';
 
 class App extends React.Component {
@@ -8,7 +8,7 @@ class App extends React.Component {
     super(props)
     
     this.state = {
-      // track: {id, title, artist, duration, isPlaying, isAudioLoaded}
+      // track: {id, title, artist, duration, isPlaying, isLoaded}
       track: null,
       displayLoadingAlert: false,
     }
@@ -33,7 +33,7 @@ class App extends React.Component {
       artist: selectedTrack.artist,
       duration: selectedTrack.duration,
       isPlaying: false,
-      isAudioLoaded: false,
+      isLoaded: false,
     }
 
     this.setState((state, props) => ({
@@ -70,7 +70,7 @@ class App extends React.Component {
 
   onLoadEnd() {
     let track = this.state.track;
-    track.isAudioLoaded = true;
+    track.isLoaded = true;
     this.setState((state, props) => ({
       track: track,
       displayLoadingAlert: false,

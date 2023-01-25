@@ -49,7 +49,7 @@
     margin: 0.1em;
 }
 
-.track__title, .track__title--playing {
+.track__title, .track__title--loaded {
     font-size: 1.2em;
     font-weight: 600;
     white-space: nowrap;
@@ -59,7 +59,7 @@
     color: var(--text-base);
 }
 
-.track__title--playing {
+.track__title--loaded {
     color: var(--main-color);
 }
 

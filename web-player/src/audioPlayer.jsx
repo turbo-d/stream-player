@@ -113,7 +113,7 @@ class AudioPlayer extends React.Component {
       return null;
     }
 
-    const disableTransport = !this.props.track.isAudioLoaded;
+    const disableTransport = !this.props.track.isLoaded;
 
     const seekLocation = this.state.seekLocation;
     const maxSlider = Math.floor(this.props.track.duration);
