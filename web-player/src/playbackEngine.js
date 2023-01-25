@@ -22,7 +22,7 @@ class PlaybackEngine extends EventTarget{
     this.srcBuf = null;
     this.srcNode = null;
     this.cursor = 0;
-    this.timerID = null;
+    this.cursorUpdateTimerID = null;
     this.lastTime = 0;
     this.isPlaying = false;
     this.stopReason = StopReason.End;
@@ -73,10 +73,6 @@ class PlaybackEngine extends EventTarget{
     return true;
   }
 
-  init() {
-
-  }
-
   cleanup() {
     if (this.audioCtx) {
       this.audioCtx.close();
@@ -89,7 +85,7 @@ class PlaybackEngine extends EventTarget{
     }
 
     if (this.srcBuf) {
-      this.#handleTrackSwitch();
+      this.#switchTrack();
     }
 
     this.audioCtx.decodeAudioData(audio)
@@ -105,8 +101,13 @@ class PlaybackEngine extends EventTarget{
 
   play() {
     //if (this.audioCtx.state === "suspended") {
+    //  this.audioCtx.resume().then(() => this.play());
+    //  return;
+    //}
+    //if (this.audioCtx.state === "interrupted" ||
+    //    this.audioCtx.state === "suspended") {
     //  this.audioCtx.resume().then(() => {
-    //    this.handlePlay();
+    //    this.play();
     //  });
     //  return;
     //}
@@ -129,7 +130,7 @@ class PlaybackEngine extends EventTarget{
 
         switch (this.stopReason) {
           case StopReason.End:
-            clearInterval(this.timerID);
+            clearInterval(this.cursorUpdateTimerID);
 
             this.#updateCursor(0);
             
@@ -159,7 +160,7 @@ class PlaybackEngine extends EventTarget{
 
       this.#setPlayState(true);
 
-      this.timerID = setInterval(
+      this.cursorUpdateTimerID = setInterval(
         () => this.#tick(),
         100
       );
@@ -171,65 +172,47 @@ class PlaybackEngine extends EventTarget{
       return;
     }
 
-    if (this.srcNode) {
-      clearInterval(this.timerID);
+    this.#setPlayState(false);
 
-      this.#setPlayState(false);
-
-      this.stopReason = StopReason.Pause;
-      this.srcNode.stop(0);
-    }
+    clearInterval(this.cursorUpdateTimerID);
+    this.stopReason = StopReason.Pause;
+    this.srcNode.stop(0);
   }
 
   returnToZero() {
-    if (!this.isPlaying) {
-      this.#updateCursor(0);
+    this.#updateCursor(0);
 
+    if (!this.isPlaying) {
       return;
     }
 
-    if (this.srcNode) {
-      clearInterval(this.timerID);
-
-      this.#updateCursor(0);
-
-      this.stopReason = StopReason.RTZ;
-      this.srcNode.stop(0);
-    }
+    clearInterval(this.cursorUpdateTimerID);
+    this.stopReason = StopReason.RTZ;
+    this.srcNode.stop(0);
   }
 
   seek(value) {
-    if (!this.isPlaying) {
-      this.#updateCursor(value);
+    this.#updateCursor(value);
 
+    if (!this.isPlaying) {
       return;
     }
 
-    if (this.srcNode) {
-      clearInterval(this.timerID);
-
-      this.#updateCursor(value);
-
-      this.stopReason = StopReason.Seek;
-      this.srcNode.stop(0);
-    }
+    clearInterval(this.cursorUpdateTimerID);
+    this.stopReason = StopReason.Seek;
+    this.srcNode.stop(0);
   }
 
-  #handleTrackSwitch() {
-    if (!this.isPlaying) {
-      this.#updateCursor(0);
+  #switchTrack() {
+    this.#updateCursor(0);
 
+    if (!this.isPlaying) {
       return;
     }
 
-    if (this.srcNode) {
-      clearInterval(this.timerID);
-
-      this.#updateCursor(0);
-
-      this.stopReason = StopReason.Switch;
-      this.srcNode.stop(0);
-    }
+    clearInterval(this.cursorUpdateTimerID);
+    this.stopReason = StopReason.Switch;
+    this.srcNode.stop(0);
   }
 
   #tick() {
