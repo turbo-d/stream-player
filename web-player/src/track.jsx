@@ -1,9 +1,6 @@
 import './track.css';
 import React from 'react';
 import NowPlayingIcon from './nowPlayingIcon.jsx';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faVolumeHigh } from '@fortawesome/free-solid-svg-icons'
-import { faVolumeOff } from '@fortawesome/free-solid-svg-icons'
 
 class Track extends React.Component {
   constructor(props) {
@@ -18,16 +15,7 @@ class Track extends React.Component {
   }
 
   render() {
-    //let loadedIcon = null;
-    //if (this.props.isLoaded) {
-    //  if (this.props.isPlaying) {
-    //    loadedIcon = <span><FontAwesomeIcon icon={faVolumeHigh}/></span>;
-    //  } else {
-    //    loadedIcon = <span><FontAwesomeIcon icon={faVolumeOff}/></span>;
-    //  }
-    //}
     let loadedIcon = this.props.isLoaded ? <NowPlayingIcon isPlaying={this.props.isPlaying}/> : null;
-
     let trackTitleClass = this.props.isLoaded ? "track__title--playing" : "track__title";
 
     return (
