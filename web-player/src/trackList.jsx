@@ -35,9 +35,9 @@ class TrackList extends React.Component {
     const trackList = this.state.tracks?.map((track) => {
       let isLoaded = false;
       let isPlaying = false;
-      if (this.props.currentTrack && this.props.currentTrack.id === track.id) {
-        isLoaded = this.props.currentTrack.isAudioLoaded;
-        isPlaying = this.props.currentTrack.isPlaying;
+      if (this.props.selectedTrack && this.props.selectedTrack.id === track.id) {
+        isLoaded = this.props.selectedTrack.isAudioLoaded;
+        isPlaying = this.props.selectedTrack.isPlaying;
       }
       return <Track track={track} key={track.id} isLoaded={isLoaded} isPlaying={isPlaying} onTrackSelect={this.handleTrackSelect}/>
     });

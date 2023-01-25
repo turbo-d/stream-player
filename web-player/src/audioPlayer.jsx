@@ -96,11 +96,15 @@ class AudioPlayer extends React.Component {
   }
 
   onPlayStateChange(eventData) {
-    this.props.onPlayStateChange(eventData.isPlaying);
+    if (eventData.isPlaying) {
+      this.props.onPlay();
+    } else {
+      this.props.onPause();
+    }
   }
 
   onAudioLoad() {
-    this.props.onAudioLoad();
+    this.props.onLoadEnd();
     this.playbackEngine.play();
   }
 

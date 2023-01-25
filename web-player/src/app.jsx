@@ -3,54 +3,65 @@ import React from 'react';
 import AudioPlayer from './audioPlayer';
 import TrackList from './trackList';
 
-// track: {id, title, artist, duration, isPlaying, isAudioLoaded}
-
 class App extends React.Component {
   constructor(props) {
     super(props)
-
+    
     this.state = {
-      currentTrack: null,
+      // track: {id, title, artist, duration, isPlaying, isAudioLoaded}
+      track: null,
     }
 
-    this.handleTrackSelect = this.handleTrackSelect.bind(this);
-
-    this.handlePlayStateChange = this.handlePlayStateChange.bind(this);
-    this.handleAudioLoad = this.handleAudioLoad.bind(this);
+    this.onTrackSelect = this.onTrackSelect.bind(this);
+    this.onPlay = this.onPlay.bind(this);
+    this.onPause = this.onPause.bind(this);
+    this.onLoadStart = this.onLoadStart.bind(this);
+    this.onLoadEnd = this.onLoadEnd.bind(this);
   }
 
-  handleTrackSelect(trackMetaData) {
-    if (this.state.currentTrack && (trackMetaData.id === this.state.currentTrack.id)) {
+  onTrackSelect(selectedTrack) {
+    if (this.state.track && (selectedTrack.id === this.state.track.id)) {
       return;
     }
 
     let track = {
-      id: trackMetaData.id,
-      title: trackMetaData.title,
-      artist: trackMetaData.artist,
-      duration: trackMetaData.duration,
+      id: selectedTrack.id,
+      title: selectedTrack.title,
+      artist: selectedTrack.artist,
+      duration: selectedTrack.duration,
       isPlaying: false,
       isAudioLoaded: false,
     }
 
     this.setState((state, props) => ({
-      currentTrack: track,
+      track: track,
     }));
   }
 
-  handlePlayStateChange(isPlaying) {
-    let currentTrack = this.state.currentTrack;
-    currentTrack.isPlaying = isPlaying;
+  onPlay() {
+    let track = this.state.track;
+    track.isPlaying = true;
     this.setState((state, props) => ({
-      currentTrack: currentTrack,
+      track: track,
     }));
   }
 
-  handleAudioLoad() {
-    let currentTrack = this.state.currentTrack;
-    currentTrack.isAudioLoaded = true;
+  onPause() {
+    let track = this.state.track;
+    track.isPlaying = false;
     this.setState((state, props) => ({
-      currentTrack: currentTrack,
+      track: track,
+    }));
+  }
+
+  onLoadStart() {
+  }
+
+  onLoadEnd() {
+    let track = this.state.track;
+    track.isAudioLoaded = true;
+    this.setState((state, props) => ({
+      track: track,
     }));
   }
 
@@ -65,13 +76,18 @@ class App extends React.Component {
           </div>
         </div>
         <div className="app__body">
-          <TrackList currentTrack={this.state.currentTrack} onTrackSelect={this.handleTrackSelect}/>
+          <TrackList
+            selectedTrack={this.state.track}
+            onTrackSelect={this.onTrackSelect}
+          />
         </div>
         <div className="app__footer">
           <AudioPlayer
-            track={this.state.currentTrack}
-            onPlayStateChange={this.handlePlayStateChange}
-            onAudioLoad={this.handleAudioLoad}
+            track={this.state.track}
+            onPlay={this.onPlay}
+            onPause={this.onPause}
+            onLoadStart={this.onLoadStart}
+            onLoadEnd={this.onLoadEnd}
           />
         </div>
       </div>
