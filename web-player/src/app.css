@@ -27,7 +27,7 @@
     color: var(--text-base);
 }
 
-.app__body {
+.app__body, .app__body--hidden{
     float: left;
     height: calc(100% - 10em);
     width: 100%;
@@ -35,11 +35,19 @@
     background: var(--background-base);
 }
 
-.app__footer {
+.app__body--hidden {
+    height: calc(100% - 4em);
+}
+
+.app__footer, .app__footer--hidden {
     float: left;
     height: 6em;
     width: 100%;
     overflow: hidden;
     background: var(--background-elevated-base);
     box-shadow: rgba(0, 0, 0, 0.2) 0 0 0.5em 0.1em;
+}
+
+.app__footer--hidden {
+    height: 0;
 }

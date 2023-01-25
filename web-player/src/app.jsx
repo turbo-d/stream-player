@@ -91,6 +91,9 @@ class App extends React.Component {
       headerText = "Tracks -- ERROR";
     }
 
+    let bodyClass = this.state.track ? "app__body" : "app__body--hidden";
+    let footerClass = this.state.track ? "app__footer" : "app__footer--hidden";
+
     return (
       <div className="app">
         <div className="app__header">
@@ -100,7 +103,7 @@ class App extends React.Component {
             </h2>
           </div>
         </div>
-        <div className="app__body">
+        <div className={bodyClass}>
           <TrackList
             selectedTrack={this.state.track}
             loadAlertTimeoutMS={500}
@@ -110,7 +113,7 @@ class App extends React.Component {
             onLoadFail={this.onLoadFail}
           />
         </div>
-        <div className="app__footer">
+        <div className={footerClass}>
           <AudioPlayer
             track={this.state.track}
             loadAlertTimeoutMS={500}
