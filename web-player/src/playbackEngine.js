@@ -30,7 +30,6 @@ class PlaybackEngine extends EventTarget{
     this.lastTime = 0;
     this.isPlaying = false;
     this.stopReason = StopReason.End;
-    this.loadAlertTimeoutTimerID = null;
     this.eventListeners = {};
   }
 
@@ -69,6 +68,9 @@ class PlaybackEngine extends EventTarget{
   }
 
   dispatchEvent(event, data) {
+    if (!this.eventListeners[event]) {
+      return;
+    }
     this.eventListeners[event].forEach(listener => listener(data));
     return true;
   }
@@ -90,7 +92,7 @@ class PlaybackEngine extends EventTarget{
 
     this.dispatchEvent(PlaybackEngineEvent.OnLoadStart, {});
 
-    this.loadingAlertTimeoutID = setTimeout(
+    let loadAlertTimeoutTimerID = setTimeout(
       () => {
         this.dispatchEvent(PlaybackEngineEvent.OnLoadAlert, {});
       },
@@ -99,7 +101,12 @@ class PlaybackEngine extends EventTarget{
 
     fetch(url)
       .then((response) => {
-        return response.arrayBuffer()
+        if (!response.ok) {
+          throw new Error(
+            `HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.arrayBuffer();
       })
       .then((downloadedBuffer) => {
         return this.audioCtx.decodeAudioData(downloadedBuffer)
@@ -107,11 +114,11 @@ class PlaybackEngine extends EventTarget{
       .then((decodedBuffer) => {
         this.srcBuf = decodedBuffer;
 
-        clearTimeout(this.loadingAlertTimeoutID);
+        clearTimeout(loadAlertTimeoutTimerID);
         this.dispatchEvent(PlaybackEngineEvent.OnLoadEnd, {});
       })
       .catch((e) => {
-        console.error(`Error: ${e}`);
+        //console.error(`Error: ${e}`);
         this.dispatchEvent(PlaybackEngineEvent.OnLoadFail, {});
       });
   }
@@ -232,14 +239,6 @@ class PlaybackEngine extends EventTarget{
     this.srcNode.stop(0);
   }
 
-  #tick() {
-    const curTime = this.audioCtx.currentTime;
-    const delta = curTime - this.lastTime;
-    this.lastTime = curTime;
-
-    this.#updateCursor(this.cursor += delta);
-  }
-
   #updateCursor(value) {
     this.cursor = value;
     this.dispatchEvent(PlaybackEngineEvent.OnCursorUpdate, {value: value});
@@ -252,6 +251,14 @@ class PlaybackEngine extends EventTarget{
     } else {
       this.dispatchEvent(PlaybackEngineEvent.OnPlaybackStop, {});
     }
+  }
+
+  #tick() {
+    const curTime = this.audioCtx.currentTime;
+    const delta = curTime - this.lastTime;
+    this.lastTime = curTime;
+
+    this.#updateCursor(this.cursor += delta);
   }
 
   #sliceAudioBuffer(buf, start) {

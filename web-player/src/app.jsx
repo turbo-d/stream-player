@@ -17,9 +17,10 @@ class App extends React.Component {
     this.onTrackSelect = this.onTrackSelect.bind(this);
     this.onPlaybackStart = this.onPlaybackStart.bind(this);
     this.onPlaybackStop = this.onPlaybackStop.bind(this);
-    this.onLoadStart = this.onLoadStart.bind(this);
-    this.onLoadEnd = this.onLoadEnd.bind(this);
+    this.onTracksLoadEnd = this.onTracksLoadEnd.bind(this);
+    this.onPlaybackLoadEnd = this.onPlaybackLoadEnd.bind(this);
     this.onLoadAlert = this.onLoadAlert.bind(this);
+    this.onLoadFail = this.onLoadFail.bind(this);
   }
 
   onTrackSelect(selectedTrack) {
@@ -57,10 +58,13 @@ class App extends React.Component {
     }));
   }
 
-  onLoadStart() {
+  onTracksLoadEnd() {
+    this.setState((state, props) => ({
+      showLoadAlert: false,
+    }));
   }
 
-  onLoadEnd() {
+  onPlaybackLoadEnd() {
     let track = this.state.track;
     track.isLoaded = true;
     this.setState((state, props) => ({
@@ -99,7 +103,11 @@ class App extends React.Component {
         <div className="app__body">
           <TrackList
             selectedTrack={this.state.track}
+            loadAlertTimeoutMS={500}
             onTrackSelect={this.onTrackSelect}
+            onLoadEnd={this.onTracksLoadEnd}
+            onLoadAlert={this.onLoadAlert}
+            onLoadFail={this.onLoadFail}
           />
         </div>
         <div className="app__footer">
@@ -108,8 +116,7 @@ class App extends React.Component {
             loadAlertTimeoutMS={500}
             onPlaybackStart={this.onPlaybackStart}
             onPlaybackStop={this.onPlaybackStop}
-            onLoadStart={this.onLoadStart}
-            onLoadEnd={this.onLoadEnd}
+            onLoadEnd={this.onPlaybackLoadEnd}
             onLoadAlert={this.onLoadAlert}
             onLoadFail={this.onLoadFail}
           />

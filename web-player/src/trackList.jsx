@@ -13,16 +13,34 @@ class TrackList extends React.Component {
   }
 
   componentDidMount() {
+    let loadAlertTimeoutTimerID = setTimeout(
+      () => {
+        this.props.onLoadAlert();
+      },
+      this.props.loadAlertTimeoutMS 
+    );
+
     const url = "/tracks"
     fetch(url)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
       .then((data) => {
         this.setState((state, props) => ({
           tracks: data.tracks,
         }));
+
+        clearTimeout(loadAlertTimeoutTimerID);
+        this.props.onLoadEnd();
       })
       .catch((e) => {
-        console.error(`Error: ${e}`);
+        //console.error(`Error: ${e}`);
+        this.props.onLoadFail();
       });
   }
 
