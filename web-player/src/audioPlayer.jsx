@@ -46,7 +46,7 @@ class AudioPlayer extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if ((!prevProps.track && this.props.track) || (prevProps.track && (prevProps.track.id !== this.props.track.id))) {
-      console.log("Load");
+      this.props.onLoadStart();
       const url = `/playback/${this.props.track.id}`;
       fetch(url)
         .then((response) => {

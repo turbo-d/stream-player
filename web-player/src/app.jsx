@@ -10,7 +10,10 @@ class App extends React.Component {
     this.state = {
       // track: {id, title, artist, duration, isPlaying, isAudioLoaded}
       track: null,
+      displayLoadingAlert: false,
     }
+
+    this.loadingAlertTimeoutID = null;
 
     this.onTrackSelect = this.onTrackSelect.bind(this);
     this.onPlay = this.onPlay.bind(this);
@@ -55,6 +58,14 @@ class App extends React.Component {
   }
 
   onLoadStart() {
+    this.loadingAlertTimeoutID = setTimeout(
+      () => {
+        this.setState((state, props) => ({
+          displayLoadingAlert: true,
+        }));
+      },
+      500
+    );
   }
 
   onLoadEnd() {
@@ -62,16 +73,20 @@ class App extends React.Component {
     track.isAudioLoaded = true;
     this.setState((state, props) => ({
       track: track,
+      displayLoadingAlert: false,
     }));
+
+    clearTimeout(this.loadingAlertTimeoutID);
   }
 
   render() {
+    let headerText = this.state.displayLoadingAlert? "Tracks -- LOADING" : "Tracks";
     return (
       <div className="app">
         <div className="app__header">
           <div className="app__headerTracksBox">
             <h2 className="app__headerTracks">
-              Tracks
+              {headerText}
             </h2>
           </div>
         </div>
