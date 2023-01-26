@@ -49,39 +49,39 @@ class TransportControl extends React.Component {
 
     return (
       <div className="transportControl">
-        <div className="transportControl__top">
-          <div className="transportControl__rtz">
-            <RTZ
-              disabled={this.props.disabled}
-              onRTZ={this.onRTZ}
-            />
-          </div>
-          <div className="transportControl__play">
-            <Play
-              disabled={this.props.disabled}
-              isPlaying={this.props.isPlaying}
-              onPlay={this.onPlay}
-              onPause={this.onPause}
-            />
-          </div>
+        <div className="transportControl__rtz">
+          <RTZ
+            disabled={this.props.disabled}
+            onRTZ={this.onRTZ}
+          />
         </div>
-        <div className="transportControl__bottom">
-          <div className="transportControl__playbackTime--left">
-            <PlaybackTime playbackTime={timeElapsed} />
-          </div>
-          <div className="transportControl__slider">
-            <PlaybackSlider
-              min={0}
-              max={maxSlider}
-              value={seekLocation}
-              disabled={this.props.disabled}
-              onBeforeChange={this.onBeforeSeek}
-              onChange={this.onSeek}
-              onAfterChange={this.onAfterSeek}
-            />
-          </div>
-          <div className="transportControl__playbackTime--right">
-            <PlaybackTime playbackTime={duration} />
+        <div className="transportControl__play">
+          <Play
+            disabled={this.props.disabled}
+            isPlaying={this.props.isPlaying}
+            onPlay={this.onPlay}
+            onPause={this.onPause}
+          />
+        </div>
+        <div className="transportControl__seekOuter">
+          <div className="transportControl__seek">
+            <div className="transportControl__playbackTime--left">
+              <PlaybackTime playbackTime={timeElapsed} />
+            </div>
+            <div className="transportControl__slider">
+              <PlaybackSlider
+                min={0}
+                max={maxSlider}
+                value={seekLocation}
+                disabled={this.props.disabled}
+                onBeforeChange={this.onBeforeSeek}
+                onChange={this.onSeek}
+                onAfterChange={this.onAfterSeek}
+              />
+            </div>
+            <div className="transportControl__playbackTime--right">
+              <PlaybackTime playbackTime={duration} />
+            </div>
           </div>
         </div>
       </div>

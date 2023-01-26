@@ -12,26 +12,34 @@
     position: relative;
 }
 
-.transportControl__bottom {
-    float: left;
+.transportControl__seekOuter {
     height: 50%;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+}
+
+.transportControl__seek {
+    float: left;
+    height: 100%;
     width: 100%;
     position: relative;
 }
 
 .transportControl__play {
     position: absolute;
-    top: 50%;
+    top: 37.5%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 2em;
+    font-size: 2.5em;
 }
 
 .transportControl__rtz {
     position: absolute;
-    top: 50%;
+    top: 37.5%;
     left: 50%;
-    transform: translate(-200%, -50%);
+    transform: translate(-375%, -50%);
     font-size: 1.5em;
 }
 
@@ -47,16 +55,14 @@
 .transportControl__playbackTime, .transportControl__playbackTime--left, .transportControl__playbackTime--right {
     position: absolute;
     top: 50%;
-    height: 100%;
-    width: 10%;
     transform: translateY(-50%);
     color: var(--text-base);
 }
 
 .transportControl__playbackTime--left {
-    left: 0;
+    right: 93%;
 }
 
 .transportControl__playbackTime--right {
-    left: 91%;
+    left: 93%;
 }
