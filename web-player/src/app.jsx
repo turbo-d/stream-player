@@ -17,7 +17,7 @@ class App extends React.Component {
     this.onTrackSelect = this.onTrackSelect.bind(this);
     this.onPlaybackStart = this.onPlaybackStart.bind(this);
     this.onPlaybackStop = this.onPlaybackStop.bind(this);
-    this.onPlaybackLoadEnd = this.onPlaybackLoadEnd.bind(this);
+    this.onTrackLoad = this.onTrackLoad.bind(this);
     this.onLoadFail = this.onLoadFail.bind(this);
     this.onErrorDialogOk = this.onErrorDialogOk.bind(this);
   }
@@ -57,7 +57,7 @@ class App extends React.Component {
     }));
   }
 
-  onPlaybackLoadEnd() {
+  onTrackLoad() {
     let track = this.state.track;
     track.isLoaded = true;
     this.setState((state, props) => ({
@@ -103,7 +103,7 @@ class App extends React.Component {
             track={this.state.track}
             onPlaybackStart={this.onPlaybackStart}
             onPlaybackStop={this.onPlaybackStop}
-            onLoadEnd={this.onPlaybackLoadEnd}
+            onLoad={this.onTrackLoad}
             onLoadFail={this.onLoadFail}
           />
         </div>
