@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlay } from '@fortawesome/free-solid-svg-icons';
 import { faCirclePause } from '@fortawesome/free-solid-svg-icons';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import LoadingSpinner from './loadingSpinner';
 
 
 class Play extends React.Component {
@@ -25,7 +26,7 @@ class Play extends React.Component {
   render() {
     let btnIcon = this.props.isPlaying ? <FontAwesomeIcon icon={faCirclePause} /> : <FontAwesomeIcon icon={faCirclePlay} />;
     if (this.props.disabled) {
-      btnIcon = <FontAwesomeIcon className="play__spinner" icon={faSpinner} />;
+      btnIcon = <LoadingSpinner/>;
     }
     //btnIcon = <FontAwesomeIcon className="play__spinner" icon={faSpinner} />;
 
