@@ -1,5 +1,6 @@
 import './app.css';
 import AudioPlayer from './audioPlayer';
+import ErrorDialog from './errorDialog';
 import React from 'react';
 import TrackList from './trackList';
 
@@ -85,34 +86,12 @@ class App extends React.Component {
   }
 
   render() {
-    let errorDialog = null;
-    if (this.state.showErrorDialog) {
-      errorDialog =
-        <div className="app__errorDialogOuter">
-          <div className="app__errorDialogWrapper">
-            <div className="app__errorDialogInner">
-              <div className="app__errorDialogTitle">
-                Unable to Connect
-              </div>
-              <div className="app__errorDialogContent">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquet consectetur tortor quis lacinia. Integer vel turpis fringilla, viverra lacus feugiat, euismod lacus. Fusce semper fermentum suscipit.
-              </div>
-              <div className="app__errorDialogButtonContainer">
-                <button className="app__errorDialogButton" onClick={this.onErrorDialogOk}>
-                  OK
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-    }
-
     let bodyClass = this.state.track ? "app__body" : "app__body--hidden";
     let footerClass = this.state.track ? "app__footer" : "app__footer--hidden";
 
     return (
       <div className="app">
-        {errorDialog}
+        <ErrorDialog show={this.state.showErrorDialog} onOk={this.onErrorDialogOk}/>
         <div className="app__header">
           <div className="app__headerTracksBox">
             <h2 className="app__headerTracks">
