@@ -90,11 +90,7 @@ class TrackList extends React.Component {
         </ul>
       </div>
 
-    return (
-      <div>
-        {dom}
-      </div>
-    );
+    return dom;
   }
 }
 
