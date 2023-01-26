@@ -2,11 +2,17 @@ import './trackList.css';
 import React from 'react';
 import Track from './track';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+
+import './play.css';
+
 class TrackList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      tracks: []
+      tracks: [],
+      isLoading: false,
     }
 
     this.onTrackSelect = this.onTrackSelect.bind(this);
@@ -20,6 +26,9 @@ class TrackList extends React.Component {
       this.props.loadAlertTimeoutMS 
     );
 
+    this.setState((state, props) => ({
+      isLoading: true,
+    }));
     const url = "/tracks"
     fetch(url)
       .then((response) => {
@@ -37,6 +46,10 @@ class TrackList extends React.Component {
 
         clearTimeout(loadAlertTimeoutTimerID);
         this.props.onLoadEnd();
+
+        this.setState((state, props) => ({
+          isLoading: false,
+        }));
       })
       .catch((e) => {
         //console.error(`Error: ${e}`);
@@ -65,11 +78,21 @@ class TrackList extends React.Component {
               />
     });
 
-    return (
+    let loadingIcon = 
+      <div className="app__spinnerContainer">
+        <FontAwesomeIcon className="play__spinner" icon={faSpinner} />
+      </div>;
+
+    let dom = this.state.isLoading ? loadingIcon :
       <div className="trackList">
         <ul className="trackList__list">
           {trackList}
         </ul>
+      </div>
+
+    return (
+      <div>
+        {dom}
       </div>
     );
   }

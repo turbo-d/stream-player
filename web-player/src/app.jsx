@@ -12,6 +12,7 @@ class App extends React.Component {
       track: null,
       showLoadAlert: false,
       showErrorDialog: false,
+      isLoadingTracks: true,
     }
 
     this.onTrackSelect = this.onTrackSelect.bind(this);
@@ -60,7 +61,7 @@ class App extends React.Component {
 
   onTracksLoadEnd() {
     this.setState((state, props) => ({
-      showLoadAlert: false,
+      isLoadingTracks: false,
     }));
   }
 

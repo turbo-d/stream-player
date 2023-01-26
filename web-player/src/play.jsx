@@ -1,8 +1,9 @@
 import './play.css';
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCirclePlay, faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { faCirclePause } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCirclePlay } from '@fortawesome/free-solid-svg-icons';
+import { faCirclePause } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 
 class Play extends React.Component {
