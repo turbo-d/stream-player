@@ -16,6 +16,10 @@ class RTZ extends React.Component {
   }
 
   render() {
+    if (this.props.disabled) {
+      return null;
+    }
+
     return (
       <button className="rtz" disabled={this.props.disabled} onClick={this.handleClick}>
         <FontAwesomeIcon icon={faBackwardStep} />
