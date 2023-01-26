@@ -22,10 +22,12 @@ class ErrorDialog extends React.Component {
         <div className="errorDialog__wrapper">
           <div className="errorDialog__inner">
             <div className="errorDialog__title">
-              Unable to Connect
+              Something went wrong &#128517;
             </div>
             <div className="errorDialog__content">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquet consectetur tortor quis lacinia. Integer vel turpis fringilla, viverra lacus feugiat, euismod lacus. Fusce semper fermentum suscipit.
+              You can check your internet connection, but let's be real...it’s probably me.
+              One of the backend services may be down or in the process of restarting.
+              Please try refreshing the page or checking back later.
             </div>
             <div className="errorDialog__buttonContainer">
               <button className="errorDialog__button" onClick={this.onClick}>

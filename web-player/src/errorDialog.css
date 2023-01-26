@@ -19,7 +19,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     width: 75vw;
-    background: var(--background-base);
+    background: var(--text-base);
     box-shadow: rgba(0, 0, 0, 0.2) 0 0 0.5em 0.1em;
     border-radius: 0.25em;
     padding: 1em;
@@ -28,19 +28,19 @@
 .errorDialog__title {
     float: left;
     padding: 0.5em;
-    font-size: 1.25em;
-    color: var(--text-base);
+    font-size: 1.5em;
+    color: var(--text-black);
     width: 100%;
     text-align: center;
 }
 
 .errorDialog__content {
     padding: 1em;
-    font-size: 0.9em;
+    font-size: 1em;
     margin-top: 0.5em;
     width: 100%;
     text-align: center;
-    color: var(--text-base);
+    color: var(--text-black);
 }
 
 .errorDialog__buttonContainer {
@@ -52,7 +52,8 @@
 
 .errorDialog__button {
     background-color: var(--main-color);
-    color: var(--text-base);
+    color: var(--text-black);
+    font-size: 1.05em;
     padding: 0.5em;
     border-radius: 0.25em;
     position: absolute;
