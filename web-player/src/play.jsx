@@ -28,7 +28,6 @@ class Play extends React.Component {
     if (this.props.disabled) {
       btnIcon = <LoadingSpinner/>;
     }
-    //btnIcon = <FontAwesomeIcon className="play__spinner" icon={faSpinner} />;
 
     return (
       <button className="play" disabled={this.props.disabled} onClick={this.handleClick}>
