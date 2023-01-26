@@ -91,7 +91,7 @@ class PlaybackEngine extends EventTarget{
     }
   }
 
-  load(url /*String*/, alertTimeoutMS /*number*/) {
+  load(url) {
     if (!this.audioCtx) {
       this.audioCtx = new AudioContext();
     }
