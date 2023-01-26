@@ -30,17 +30,23 @@
     width: 100%;
     margin: 0.1em;
     max-width: 100%;
+    position: relative;
 }
 
 .track__iconContainer {
-    float: left;
-    margin-right: 0.25em;
+    position: absolute;
+    bottom: 0.3em;
+    left: 0.1em;
 }
 
-.track__titleContainer {
+.track__titleContainer, .track__titleContainer--loaded {
     float: left;
     max-width: calc(100% - 1.25em);
     overflow: hidden;
+}
+
+.track__titleContainer--loaded {
+    margin-left: 1.15em;
 }
 
 .track__artistContainer {

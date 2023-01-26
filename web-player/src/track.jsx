@@ -16,6 +16,7 @@ class Track extends React.Component {
 
   render() {
     let trackIcon = this.props.isLoaded ? <NowPlayingIcon isPlaying={this.props.isPlaying}/> : null;
+    let trackTitleContainerClass = this.props.isLoaded ? "track__titleContainer--loaded" : "track__titleContainer";
     let trackTitleClass = this.props.isLoaded ? "track__title--loaded" : "track__title";
 
     return (
@@ -26,7 +27,7 @@ class Track extends React.Component {
               <div className="track__iconContainer">
                 {trackIcon}
               </div>
-              <div className="track__titleContainer"> 
+              <div className={trackTitleContainerClass}> 
                 <span className={trackTitleClass}>
                   {this.props.track.title}
                 </span>
