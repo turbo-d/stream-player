@@ -14,6 +14,8 @@ class App extends React.Component {
       showErrorDialog: false,
     }
 
+    this.audioPlayerRef = React.createRef();
+
     this.onTrackSelect = this.onTrackSelect.bind(this);
     this.onPlaybackStart = this.onPlaybackStart.bind(this);
     this.onPlaybackStop = this.onPlaybackStop.bind(this);
@@ -26,6 +28,12 @@ class App extends React.Component {
     if (this.state.track && (selectedTrack.id === this.state.track.id)) {
       return;
     }
+
+    // Safari does not allow audio playback unless the playback is initiated
+    // as a direct result of a user gesture. We must be in the call stack of
+    // the handling of a user gesture (promise chains are not allowed) in 
+    // order to successfully enable playback.
+    this.audioPlayerRef.current.enablePlayback();
 
     let track = {
       id: selectedTrack.id,
@@ -100,6 +108,7 @@ class App extends React.Component {
         </div>
         <div className={footerClass}>
           <AudioPlayer
+            ref={this.audioPlayerRef}
             track={this.state.track}
             onPlaybackStart={this.onPlaybackStart}
             onPlaybackStop={this.onPlaybackStop}

@@ -80,6 +80,17 @@ class PlaybackEngine extends EventTarget{
     }
   }
 
+  resume() {
+    if (!this.audioCtx) {
+      this.audioCtx = new AudioContext();
+    }
+
+    if (this.audioCtx.state === "interrupted" ||
+        this.audioCtx.state === "suspended") {
+      return this.audioCtx.resume();
+    }
+  }
+
   load(url /*String*/, alertTimeoutMS /*number*/) {
     if (!this.audioCtx) {
       this.audioCtx = new AudioContext();

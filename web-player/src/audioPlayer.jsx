@@ -48,6 +48,10 @@ class AudioPlayer extends React.Component {
     }
   }
 
+  enablePlayback() {
+    this.playbackEngine.resume();
+  }
+
   onPlay() {
     this.playbackEngine.play();
   }
