@@ -19,13 +19,6 @@ class TrackList extends React.Component {
   }
 
   componentDidMount() {
-    let loadAlertTimeoutTimerID = setTimeout(
-      () => {
-        this.props.onLoadAlert();
-      },
-      this.props.loadAlertTimeoutMS 
-    );
-
     this.setState((state, props) => ({
       isLoading: true,
     }));
@@ -42,14 +35,10 @@ class TrackList extends React.Component {
       .then((data) => {
         this.setState((state, props) => ({
           tracks: data.tracks,
-        }));
-
-        clearTimeout(loadAlertTimeoutTimerID);
-        this.props.onLoadEnd();
-
-        this.setState((state, props) => ({
           isLoading: false,
         }));
+
+        this.props.onLoadEnd();
       })
       .catch((e) => {
         //console.error(`Error: ${e}`);

@@ -2,7 +2,6 @@ const PlaybackEngineEvent = Object.freeze({
   Undefined: "undefined",
   OnLoadStart: "onLoadStart",
   OnLoadEnd: "onLoadEnd",
-  OnLoadAlert: "onLoadAlert",
   OnLoadFail: "onLoadFail",
   OnPlaybackStart: "onPlaybackStart",
   OnPlaybackStop: "onPlaybackStop",
@@ -91,14 +90,6 @@ class PlaybackEngine extends EventTarget{
     }
 
     this.dispatchEvent(PlaybackEngineEvent.OnLoadStart, {});
-
-    let loadAlertTimeoutTimerID = setTimeout(
-      () => {
-        this.dispatchEvent(PlaybackEngineEvent.OnLoadAlert, {});
-      },
-      alertTimeoutMS
-    );
-
     fetch(url)
       .then((response) => {
         if (!response.ok) {
@@ -114,7 +105,6 @@ class PlaybackEngine extends EventTarget{
       .then((decodedBuffer) => {
         this.srcBuf = decodedBuffer;
 
-        clearTimeout(loadAlertTimeoutTimerID);
         this.dispatchEvent(PlaybackEngineEvent.OnLoadEnd, {});
       })
       .catch((e) => {

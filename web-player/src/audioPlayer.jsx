@@ -21,7 +21,6 @@ class AudioPlayer extends React.Component {
     this.onSeek = this.onSeek.bind(this);
     this.onAfterSeek = this.onAfterSeek.bind(this);
     this.onLoadEnd = this.onLoadEnd.bind(this);
-    this.onLoadAlert = this.onLoadAlert.bind(this);
     this.onLoadFail = this.onLoadFail.bind(this);
     this.onCursorUpdate = this.onCursorUpdate.bind(this);
     this.onPlaybackStart = this.onPlaybackStart.bind(this);
@@ -31,7 +30,6 @@ class AudioPlayer extends React.Component {
   componentDidMount() {
     this.playbackEngine = new PlaybackEngine();
     this.playbackEngine.addEventListener("onLoadEnd", this.onLoadEnd);
-    this.playbackEngine.addEventListener("onLoadAlert", this.onLoadAlert);
     this.playbackEngine.addEventListener("onLoadFail", this.onLoadFail);
     this.playbackEngine.addEventListener("onPlaybackStart", this.onPlaybackStart);
     this.playbackEngine.addEventListener("onPlaybackStop", this.onPlaybackStop);
@@ -81,10 +79,6 @@ class AudioPlayer extends React.Component {
   onLoadEnd() {
     this.props.onLoadEnd();
     this.playbackEngine.play();
-  }
-
-  onLoadAlert() {
-    this.props.onLoadAlert();
   }
 
   onLoadFail() {
