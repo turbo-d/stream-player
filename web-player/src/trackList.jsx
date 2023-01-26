@@ -67,7 +67,7 @@ class TrackList extends React.Component {
     });
 
     let loadingIcon = 
-      <div className="app__spinnerContainer">
+      <div className="trackList__spinnerContainer">
         <LoadingSpinner/>
       </div>;
 
