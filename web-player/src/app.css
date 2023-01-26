@@ -60,3 +60,66 @@
 .app__footer--hidden {
     height: 0;
 }
+
+.app__errorDialogOuter {
+    position: fixed;
+    z-index: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+    height: 100%;
+    width: 100%;
+}
+
+.app__errorDialogWrapper {
+    position: relative;
+    float: left;
+    height: 100%;
+    width: 100%;
+}
+
+.app__errorDialogInner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 75vw;
+    background: var(--background-base);
+    box-shadow: rgba(0, 0, 0, 0.2) 0 0 0.5em 0.1em;
+    border-radius: 0.25em;
+    padding: 1em;
+}
+
+.app__errorDialogTitle {
+    float: left;
+    padding: 0.5em;
+    font-size: 1.25em;
+    color: var(--text-base);
+    width: 100%;
+    text-align: center;
+}
+
+.app__errorDialogContent {
+    padding: 1em;
+    font-size: 0.9em;
+    margin-top: 0.5em;
+    width: 100%;
+    text-align: center;
+    color: var(--text-base);
+}
+
+.app__errorDialogButtonContainer {
+    float: left;
+    width: 100%;
+    height: 2.5em;
+    position: relative;
+}
+
+.app__errorDialogButton {
+    background-color: var(--main-color);
+    color: var(--text-base);
+    padding: 0.5em;
+    border-radius: 0.25em;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}

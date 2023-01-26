@@ -22,6 +22,7 @@ class App extends React.Component {
     this.onPlaybackLoadEnd = this.onPlaybackLoadEnd.bind(this);
     this.onLoadAlert = this.onLoadAlert.bind(this);
     this.onLoadFail = this.onLoadFail.bind(this);
+    this.onErrorDialogOk = this.onErrorDialogOk.bind(this);
   }
 
   onTrackSelect(selectedTrack) {
@@ -86,10 +87,35 @@ class App extends React.Component {
     }));
   }
 
+  onErrorDialogOk() {
+    this.setState((state, props) => ({
+      showErrorDialog: false,
+    }));
+  }
+
   render() {
     let headerText = this.state.showLoadAlert? "Tracks -- LOADING" : "Tracks";
+    let errorDialog = null;
     if (this.state.showErrorDialog) {
       headerText = "Tracks -- ERROR";
+      errorDialog =
+        <div className="app__errorDialogOuter">
+          <div className="app__errorDialogWrapper">
+            <div className="app__errorDialogInner">
+              <div className="app__errorDialogTitle">
+                Unable to Connect
+              </div>
+              <div className="app__errorDialogContent">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquet consectetur tortor quis lacinia. Integer vel turpis fringilla, viverra lacus feugiat, euismod lacus. Fusce semper fermentum suscipit.
+              </div>
+              <div className="app__errorDialogButtonContainer">
+                <button className="app__errorDialogButton" onClick={this.onErrorDialogOk}>
+                  OK
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
     }
 
     let bodyClass = this.state.track ? "app__body" : "app__body--hidden";
@@ -97,6 +123,7 @@ class App extends React.Component {
 
     return (
       <div className="app">
+        {errorDialog}
         <div className="app__header">
           <div className="app__headerTracksBox">
             <h2 className="app__headerTracks">
