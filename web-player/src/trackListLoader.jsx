@@ -44,8 +44,8 @@ class TrackListLoader extends React.Component {
       });
   }
 
-  onTrackSelect() {
-    this.props.onTrackSelect();
+  onTrackSelect(track) {
+    this.props.onTrackSelect(track);
   }
 
   render() {
