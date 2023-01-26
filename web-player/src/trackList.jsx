@@ -1,48 +1,12 @@
 import './trackList.css';
-import LoadingSpinner from './loadingSpinner';
 import React from 'react';
 import Track from './track';
 
 class TrackList extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      tracks: [],
-      isLoading: false,
-    }
 
     this.onTrackSelect = this.onTrackSelect.bind(this);
-  }
-
-  componentDidMount() {
-    this.setState((state, props) => ({
-      isLoading: true,
-    }));
-    const url = "/tracks"
-    fetch(url)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(
-            `HTTP error: The status is ${response.status}`
-          );
-        }
-        return response.json();
-      })
-      .then((data) => {
-        this.setState((state, props) => ({
-          isLoading: false,
-          tracks: data.tracks,
-        }));
-
-        this.props.onLoadEnd();
-      })
-      .catch((e) => {
-        //console.error(`Error: ${e}`);
-        this.setState((state, props) => ({
-          isLoading: false,
-        }));
-        this.props.onLoadFail();
-      });
   }
 
   onTrackSelect(track) {
@@ -50,7 +14,7 @@ class TrackList extends React.Component {
   }
 
   render() {
-    const trackList = this.state.tracks?.map((track) => {
+    const trackList = this.props.tracks?.map((track) => {
       let isLoaded = false;
       let isPlaying = false;
       if (this.props.selectedTrack && this.props.selectedTrack.id === track.id) {
@@ -66,19 +30,13 @@ class TrackList extends React.Component {
               />
     });
 
-    let loadingIcon = 
-      <div className="trackList__spinnerContainer">
-        <LoadingSpinner/>
-      </div>;
-
-    let dom = this.state.isLoading ? loadingIcon :
+    return (
       <div className="trackList">
         <ul className="trackList__list">
           {trackList}
         </ul>
       </div>
-
-    return dom;
+    );
   }
 }
 

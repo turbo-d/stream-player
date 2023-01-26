@@ -2,7 +2,7 @@ import './app.css';
 import AudioPlayer from './audioPlayer';
 import ErrorDialog from './errorDialog';
 import React from 'react';
-import TrackList from './trackList';
+import TrackListLoader from './trackListLoader';
 
 class App extends React.Component {
   constructor(props) {
@@ -12,13 +12,11 @@ class App extends React.Component {
       // track: {id, title, artist, duration, isPlaying, isLoaded}
       track: null,
       showErrorDialog: false,
-      isLoadingTracks: true,
     }
 
     this.onTrackSelect = this.onTrackSelect.bind(this);
     this.onPlaybackStart = this.onPlaybackStart.bind(this);
     this.onPlaybackStop = this.onPlaybackStop.bind(this);
-    this.onTracksLoadEnd = this.onTracksLoadEnd.bind(this);
     this.onPlaybackLoadEnd = this.onPlaybackLoadEnd.bind(this);
     this.onLoadFail = this.onLoadFail.bind(this);
     this.onErrorDialogOk = this.onErrorDialogOk.bind(this);
@@ -59,12 +57,6 @@ class App extends React.Component {
     }));
   }
 
-  onTracksLoadEnd() {
-    this.setState((state, props) => ({
-      isLoadingTracks: false,
-    }));
-  }
-
   onPlaybackLoadEnd() {
     let track = this.state.track;
     track.isLoaded = true;
@@ -100,10 +92,9 @@ class App extends React.Component {
           </div>
         </div>
         <div className={bodyClass}>
-          <TrackList
+          <TrackListLoader
             selectedTrack={this.state.track}
             onTrackSelect={this.onTrackSelect}
-            onLoadEnd={this.onTracksLoadEnd}
             onLoadFail={this.onLoadFail}
           />
         </div>
