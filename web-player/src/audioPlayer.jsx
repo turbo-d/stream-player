@@ -44,7 +44,7 @@ class AudioPlayer extends React.Component {
     if ((!prevProps.track && this.props.track) ||
         (prevProps.track && (prevProps.track.id !== this.props.track.id))) {
       const url = `/playback/${this.props.track.id}`;
-      this.playbackEngine.load(url, this.props.loadAlertTimeoutMS);
+      this.playbackEngine.load(url);
     }
   }
 
