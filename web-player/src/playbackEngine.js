@@ -91,7 +91,7 @@ class PlaybackEngine extends EventTarget{
     }
   }
 
-  load(url) {
+  async load(url) {
     if (!this.audioCtx) {
       this.audioCtx = new AudioContext();
     }
@@ -100,28 +100,25 @@ class PlaybackEngine extends EventTarget{
       this.#switchTrack();
     }
 
-    this.dispatchEvent(PlaybackEngineEvent.OnLoadStart, {});
-    fetch(url)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(
-            `HTTP error: The status is ${response.status}`
-          );
-        }
-        return response.arrayBuffer();
-      })
-      .then((downloadedBuffer) => {
-        return this.audioCtx.decodeAudioData(downloadedBuffer)
-      })
-      .then((decodedBuffer) => {
-        this.srcBuf = decodedBuffer;
+    try {
+      this.dispatchEvent(PlaybackEngineEvent.OnLoadStart, {});
+      const response = await fetch(url);
 
-        this.dispatchEvent(PlaybackEngineEvent.OnLoadEnd, {});
-      })
-      .catch((e) => {
-        //console.error(`Error: ${e}`);
-        this.dispatchEvent(PlaybackEngineEvent.OnLoadFail, {});
-      });
+      if (!response.ok) {
+        throw new Error(
+          `HTTP error: ${response.status}`
+        );
+      }
+
+      const downloadedBuffer = await response.arrayBuffer();
+      const decodedBuffer = await this.audioCtx.decodeAudioData(downloadedBuffer);
+
+      this.srcBuf = decodedBuffer;
+      this.dispatchEvent(PlaybackEngineEvent.OnLoadEnd, {});
+    }
+    catch (e) {
+      this.dispatchEvent(PlaybackEngineEvent.OnLoadFail, {});
+    }
   }
 
   play() {
