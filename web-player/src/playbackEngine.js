@@ -102,7 +102,12 @@ class PlaybackEngine extends EventTarget{
 
     try {
       this.dispatchEvent(PlaybackEngineEvent.OnLoadStart, {});
+
+      this.lastReqId = url.charAt(url.length-1);
+
       const response = await fetch(url);
+
+      let respId = response.url.charAt(response.url.length-1);
 
       if (!response.ok) {
         throw new Error(
@@ -113,27 +118,23 @@ class PlaybackEngine extends EventTarget{
       const downloadedBuffer = await response.arrayBuffer();
       const decodedBuffer = await this.audioCtx.decodeAudioData(downloadedBuffer);
 
+      if (respId !== this.lastReqId) {
+        throw new Error("cancel");
+      }
       this.srcBuf = decodedBuffer;
+
       this.dispatchEvent(PlaybackEngineEvent.OnLoadEnd, {});
     }
     catch (e) {
-      this.dispatchEvent(PlaybackEngineEvent.OnLoadFail, {});
+      if (e.message === "cancel") {
+        return;
+      } else {
+        this.dispatchEvent(PlaybackEngineEvent.OnLoadFail, {});
+      }
     }
   }
 
   play() {
-    //if (this.audioCtx.state === "suspended") {
-    //  this.audioCtx.resume().then(() => this.play());
-    //  return;
-    //}
-    //if (this.audioCtx.state === "interrupted" ||
-    //    this.audioCtx.state === "suspended") {
-    //  this.audioCtx.resume().then(() => {
-    //    this.play();
-    //  });
-    //  return;
-    //}
-
     let sampleFrame = Math.floor(this.cursor * this.audioCtx.sampleRate);
     let buf = this.#sliceAudioBuffer(this.srcBuf, sampleFrame);
 
@@ -231,6 +232,8 @@ class PlaybackEngine extends EventTarget{
     if (!this.isPlaying) {
       return;
     }
+
+    this.#setPlayState(false);
 
     clearInterval(this.cursorUpdateTimerID);
     this.stopReason = StopReason.Switch;
