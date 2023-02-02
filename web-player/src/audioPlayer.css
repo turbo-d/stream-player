@@ -5,17 +5,37 @@
     position: relative;
 }
 
-.audioPlayer__trackData {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 25%;
+@media only screen and (min-width: 600px) {
+    .audioPlayer__trackData {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 25%;
+    }
+
+    .audioPlayer__transport {
+        float: left;
+        height: 100%;
+        width: 50%;
+        margin-left: 25%;
+    }
 }
 
-.audioPlayer__transport {
-    float: left;
-    height: 100%;
-    width: 50%;
-    margin-left: 25%;
+@media only screen and (max-width: 600px) {
+    .audioPlayer__trackData {
+        position: absolute;
+        top: 0;
+        left: 2.5%;
+        height: 70%;
+        width: calc(100% - 9em);
+    }
+
+    .audioPlayer__transport {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+    }
 }

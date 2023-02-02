@@ -39,3 +39,9 @@
     width: 20%;
     background: linear-gradient(to left, rgba(36, 36, 36, 1), rgba(36, 36, 36, 0));
 }
+
+@media only screen and (max-width: 600px) {
+    .trackData__inner {
+        padding: unset;
+    }
+}

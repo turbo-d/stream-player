@@ -66,3 +66,38 @@
 .transportControl__playbackTime--right {
     left: 93%;
 }
+
+@media only screen and (max-width: 600px) {
+    .transportControl__play {
+        transform: translateY(-50%);
+        left: unset;
+        right: 3%;
+        font-size: 3.5em;
+    }
+
+    .transportControl__rtz {
+        left: unset;
+        right: 3%;
+        font-size: 2.1em;
+    }
+
+    .transportControl__slider {
+        width: 94%;
+    }
+
+    .transportControl__playbackTime, .transportControl__playbackTime--left, .transportControl__playbackTime--right {
+        transform: translateY(65%);
+        font-size: 0.8em;
+        font-weight: 300;
+    }
+
+    .transportControl__playbackTime--left {
+        right: unset;
+        left: 3%;
+    }
+
+    .transportControl__playbackTime--right {
+        left: unset;
+        right: 3%; 
+    }
+}
