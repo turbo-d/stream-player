@@ -1,10 +1,14 @@
 # stream-player
 
-A music streaming web player hosted on GCP. Check it out [here](https://web-player-6zcf3l4wpa-uc.a.run.app/)!
+A web player for streaming music, hosted on GCP. Check it out [here](https://web-player-6zcf3l4wpa-uc.a.run.app/)!
 
 NOTE: If you are on an iPhone you need to either use headphones, or turn off silent mode to hear any audio.
 
 
+The repo consists of a React web player in [web-player](https://github.com/turbo-d/stream-player/tree/main/web-player), and a Go backend in [server](https://github.com/turbo-d/stream-player/tree/main/server). The backend communicates with a postgres db and there are data definition files in [server/db/migrations](https://github.com/turbo-d/stream-player/tree/main/server/db/migrations).
+
+
+Screenshots:
 ![Screenshot](https://github.com/turbo-d/stream-player/blob/main/images/stream-player.png)
 
 
